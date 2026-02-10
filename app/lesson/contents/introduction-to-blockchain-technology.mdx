@@ -1,0 +1,127 @@
+---
+title: 'Introduction to Blockchain Technology'
+orderIndex: '1'
+description: 'Understand the fundamental concepts of blockchain, distributed ledgers, and how they differ from traditional databases. Learn about the core problems blockchain solves and its key characteristics.'
+---
+
+# Introduction to Blockchain Technology
+
+## Learning outcomes
+
+- Explain what blockchain technology is and how it works at a fundamental level
+- Distinguish between blockchain and traditional centralized databases
+- Identify the key characteristics of blockchain technology (decentralization, immutability, transparency)
+- Describe the concept of distributed ledgers and consensus mechanisms
+- Recognize real-world problems that blockchain technology aims to solve
+- Understand the basic structure of blocks and how they link together
+
+## What is Blockchain?
+
+Blockchain is a distributed database or ledger technology that allows multiple participants to share and maintain a synchronized record of data. Unlike traditional databases controlled by a single entity, blockchain distributes identical copies of data across a network of computers (nodes). 
+
+Think of it like a digital ledger that records transactions in "blocks" of data, with each new block connected to the previous one, forming a "chain" of blocks—hence the name blockchain. This chain creates a tamper-evident history of all transactions that have ever occurred on the network.
+
+```
+Block 1 → Block 2 → Block 3 → ... → Block n
+```
+
+Each block typically contains:
+- A timestamp
+- Transaction data
+- A cryptographic hash of the previous block (creating the chain)
+- A unique hash identifier for the current block
+
+### Notes
+
+While often associated exclusively with cryptocurrencies like Bitcoin, blockchain is a versatile technology with applications far beyond digital currencies. It's a specific type of distributed ledger technology (DLT), though the terms are sometimes used interchangeably.
+
+## Key Characteristics of Blockchain
+
+### Decentralization
+
+Unlike traditional systems where a central authority maintains and controls data, blockchain operates on a peer-to-peer network. No single entity has complete control, as the database is distributed across many computers. This decentralization has significant implications:
+
+- Eliminates single points of failure
+- Reduces the risk of censorship
+- Distributes power among network participants
+- Creates systems that can operate without trusted intermediaries
+
+### Immutability
+
+Once data is recorded on a blockchain and confirmed by the network, it becomes extremely difficult to alter. This **immutability** is achieved through cryptographic hashing and the chain structure itself. Changing data in one block would require changing all subsequent blocks and convincing the majority of the network to accept these changes—a nearly impossible task in properly designed blockchain systems.
+
+### Transparency and Privacy
+
+Most blockchains offer unprecedented transparency, as anyone can view the entire transaction history. However, this doesn't necessarily mean sacrificing privacy:
+
+- Public blockchains allow anyone to view transactions, but participants often use pseudonymous identities
+- Private or permissioned blockchains restrict who can view and participate
+- Zero-knowledge proofs and other privacy-enhancing technologies enable verification without revealing all data
+
+## How Blockchain Works
+
+### Distributed Ledger Technology
+
+At its core, blockchain is a type of **distributed ledger technology**. In traditional systems, a central authority maintains the definitive record. With blockchain, multiple copies of the same ledger exist across the network. When changes occur:
+
+1. The proposed change is broadcast to all network participants
+2. Participants validate the change according to consensus rules
+3. Once validated, every copy of the ledger updates to include the new data
+
+This ensures that all participants always have access to the same information.
+
+### Consensus Mechanisms
+
+For a blockchain to function properly, all participants must agree on which transactions are valid and the order in which they occurred. This agreement process is called **consensus**. Different blockchains use different consensus mechanisms, including:
+
+- **Proof of Work (PoW)**: Participants solve complex mathematical puzzles to validate transactions and create new blocks (used by Bitcoin)
+- **Proof of Stake (PoS)**: Validators are selected based on the amount of cryptocurrency they "stake" as collateral (used by Ethereum 2.0)
+- **Delegated Proof of Stake (DPoS)**: Token holders vote for a limited number of delegates who validate transactions
+- **Practical Byzantine Fault Tolerance (PBFT)**: A voting-based consensus used in some enterprise blockchains
+
+Each mechanism offers different trade-offs between security, speed, energy efficiency, and decentralization.
+
+## Blockchain vs. Traditional Databases
+
+To understand blockchain's innovation, it helps to contrast it with traditional database systems:
+
+| Characteristic | Traditional Database | Blockchain |
+|----------------|----------------------|------------|
+| Control | Centralized (single authority) | Decentralized (distributed authority) |
+| Modification | Data can be easily edited or deleted | Data is append-only and nearly impossible to alter |
+| Trust | Requires trust in the central authority | Trust is distributed across the network |
+| Transparency | Limited visibility, controlled by administrator | Transparent to all participants (in public blockchains) |
+| Redundancy | Usually maintained in one location with backups | Multiple identical copies across the network |
+| Performance | Generally higher transaction throughput | Usually lower throughput (with exceptions) |
+
+## Problems Blockchain Solves
+
+Blockchain technology addresses several fundamental problems:
+
+### The Double-Spending Problem
+
+Before Bitcoin, a major challenge for digital currencies was preventing people from copying and spending the same digital money multiple times. Blockchain solves this by creating a verifiable public record of all transactions that network participants agree upon.
+
+### The Byzantine Generals Problem
+
+This is a classic computer science problem about how to reach consensus in a distributed system where some participants might be unreliable or malicious. Blockchain's consensus mechanisms provide practical solutions to this theoretical problem.
+
+### Trust and Intermediary Dependence
+
+Many business processes require trusted intermediaries (banks, notaries, etc.) to verify transactions. Blockchain enables **trustless systems** where parties can transact directly without these intermediaries, potentially reducing costs and increasing efficiency.
+
+## Check your understanding
+
+Consider this scenario: A small community wants to create a local time-banking system where members exchange services based on time spent. Currently, they use a spreadsheet managed by an administrator. What specific advantages might implementing a blockchain solution offer them? What challenges might they face?
+
+## Resources
+
+- **Bitcoin Whitepaper** - Satoshi Nakamoto's original 2008 paper "Bitcoin: A Peer-to-Peer Electronic Cash System" provides the foundational concepts of blockchain technology.
+
+- **Blockchain Technology Overview** - The National Institute of Standards and Technology (NIST) offers a comprehensive technical introduction to blockchain.
+
+- **Web3 Foundation Resources** - Educational materials on blockchain, decentralization, and the future of web technologies.
+
+- **"Blockchain Basics" by Daniel Drescher** - An accessible non-technical introduction to the core concepts behind blockchain technology.
+
+- **GitHub Open Source Blockchain Implementations** - Examining the code of projects like Bitcoin Core or Ethereum can provide technical insights into blockchain implementation.

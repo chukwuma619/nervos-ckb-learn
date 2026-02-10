@@ -1,0 +1,147 @@
+---
+title: 'Cryptocurrency Fundamentals'
+orderIndex: '2'
+description: 'Explore what cryptocurrencies are, how they work, and their relationship to blockchain technology. Learn about wallets, transactions, and the basic cryptographic principles that enable digital currencies.'
+---
+
+# Cryptocurrency Fundamentals
+
+## Learning outcomes
+
+* Explain what cryptocurrencies are and how they differ from traditional currencies
+* Describe the relationship between blockchain technology and cryptocurrencies
+* Understand how public and private keys function in cryptocurrency transactions
+* Explain the purpose and types of cryptocurrency wallets
+* Identify the steps involved in processing a cryptocurrency transaction
+* Recognize common cryptocurrency terminology and concepts
+* Understand the role of cryptography in securing digital currency systems
+
+## What is Cryptocurrency?
+
+Cryptocurrency is a digital or virtual form of currency that uses cryptography for security, operates independently of a central authority, and typically exists on a distributed ledger called a blockchain. Unlike traditional currencies issued by governments (known as **fiat currencies**), cryptocurrencies are generally not controlled by any single entity.
+
+Let's start with a practical example: imagine you want to send $100 to a friend in another country. With traditional banking, this involves multiple intermediaries (your bank, clearing houses, your friend's bank), fees at each step, and potentially days of processing time. With cryptocurrency, you can send an equivalent value directly to your friend's cryptocurrency address in minutes, regardless of geographic location, with potentially lower fees.
+
+### Key characteristics of cryptocurrencies
+
+* **Digital-native**: Cryptocurrencies exist solely in digital form, with no physical coins or bills
+* **Decentralized**: Most operate without a central authority like a government or bank
+* **Limited supply**: Many cryptocurrencies have a capped total supply (e.g., Bitcoin's 21 million coin limit)
+* **Borderless**: Can be sent anywhere in the world without requiring approval from intermediaries
+* **Pseudonymous**: Transactions are linked to cryptographic addresses rather than personal identities
+
+#### Notes
+While cryptocurrencies offer pseudonymity, they are not completely anonymous. Most public blockchains record all transactions permanently, making them traceable. Some specialized "privacy coins" implement additional features to enhance anonymity.
+
+## Cryptocurrency and Blockchain
+
+Blockchain technology serves as the foundation for most cryptocurrencies. While blockchain has many applications beyond digital money, cryptocurrencies were the first widespread use case.
+
+The relationship works like this:
+1. The blockchain provides the secure, transparent ledger that records all transactions
+2. The cryptocurrency is the native digital asset that flows through that system
+
+Bitcoin, created in 2009 by the pseudonymous Satoshi Nakamoto, was the first cryptocurrency and introduced the blockchain concept. Since then, thousands of alternative cryptocurrencies (often called **altcoins**) have emerged, each with different features and purposes.
+
+### Categories of cryptocurrencies
+
+* **Payment tokens**: Designed primarily as digital money (e.g., Bitcoin, Litecoin)
+* **Platform tokens**: Power blockchain platforms that run applications (e.g., Ethereum, Solana)
+* **Utility tokens**: Provide access to specific products or services
+* **Stablecoins**: Pegged to stable assets like the US dollar (e.g., USDC, Tether)
+* **Non-fungible tokens (NFTs)**: Represent ownership of unique digital or physical items
+
+## Cryptographic Keys and Addresses
+
+Cryptography is the foundation of cryptocurrency security. When you "own" cryptocurrency, what you actually possess are the cryptographic keys that control access to those assets on the blockchain.
+
+### Public and private keys
+
+Cryptocurrency systems use **asymmetric cryptography** with key pairs:
+
+1. **Private key**: A secret number that should never be shared. Think of this as the password to your crypto funds.
+2. **Public key**: Derived mathematically from the private key. Can be shared safely.
+3. **Address**: A shortened, user-friendly version of the public key where funds are sent.
+
+```
+Private key: 5Kb8kLf9zgWQnogidDA76MzPL6TsZZY36hWXMssSzNydYXYB9KF
+Public key: 04a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc7dd55d40d7de9 
+          0e45d83f7626c9e8b9e32c31ffcdb4cbd4f2de9ddfb5d64900
+Bitcoin address: 1EHNa6Q4Jz2uvNExL497mE43ikXhwF6kZm
+```
+
+When you want to send cryptocurrency, you use your private key to generate a digital signature for the transaction. Others can verify this signature using your public key, confirming you authorized the transaction without ever seeing your private key.
+
+#### Notes
+Your private key grants complete control over your cryptocurrency. If someone obtains your private key, they can take all your funds. Unlike bank accounts, there's typically no recovery process for lost private keys.
+
+## Cryptocurrency Wallets
+
+A cryptocurrency **wallet** doesn't actually store your coins (which exist only as records on the blockchain). Instead, wallets store your private keys and interact with the blockchain to manage your funds.
+
+### Types of wallets
+
+* **Hot wallets**: Connected to the internet for convenience (mobile apps, desktop programs, web wallets)
+* **Cold wallets**: Kept offline for security (hardware devices, paper wallets)
+* **Custodial wallets**: A third party holds your keys (exchanges like Coinbase)
+* **Non-custodial wallets**: You control your keys directly (MetaMask, Ledger, Trezor)
+
+When setting up a wallet, you'll typically receive a **seed phrase** (or recovery phrase) - a sequence of 12-24 words that can regenerate all your private keys. This seed phrase needs even more protection than individual private keys.
+
+```
+Example seed phrase: witch collapse practice feed shame open despair creek road again ice least
+```
+
+### Check your understanding
+
+Consider the following scenario: You're setting up your first cryptocurrency wallet. You've been given the option between a mobile wallet app and a hardware wallet. The mobile app is free and convenient, while the hardware wallet costs $75 but offers better security. You plan to hold $5,000 worth of cryptocurrency.
+
+Which would you choose, and why? Think about the security/convenience tradeoff before continuing.
+
+## Cryptocurrency Transactions
+
+Let's follow a typical cryptocurrency transaction to understand how the system works:
+
+1. **Initiation**: Alice wants to send 0.1 BTC to Bob. She opens her wallet and enters Bob's public address.
+
+2. **Authorization**: Alice's wallet creates a transaction message and signs it with her private key, proving she controls the sending address.
+
+3. **Broadcasting**: The signed transaction is broadcast to the cryptocurrency network.
+
+4. **Verification**: Network nodes verify that:
+   - Alice has enough funds
+   - Her digital signature is valid
+   - The transaction follows all network rules
+
+5. **Confirmation**: Miners or validators include the transaction in a new block.
+
+6. **Finalization**: Once the block is added to the blockchain, Bob's wallet shows the received funds.
+
+The time this process takes varies by cryptocurrency. Bitcoin transactions typically need multiple confirmations (each new block) for security, taking about an hour for high-value transfers. Other cryptocurrencies like Solana can process transactions in seconds.
+
+### Transaction fees
+
+Most cryptocurrency networks require transaction fees, which:
+
+* Compensate miners/validators for processing transactions
+* Prevent spam attacks on the network
+* Prioritize transactions during periods of network congestion
+
+Fees can vary dramatically based on network activity. For example, during Bitcoin's 2021 peak, average transaction fees briefly exceeded $60, while in quieter periods they might be under $1.
+
+## Beyond Basic Transactions
+
+Modern cryptocurrencies have evolved well beyond simple transfers of value:
+
+* **Smart contracts**: Self-executing agreements with rules written in code (primarily on platforms like Ethereum)
+* **Decentralized applications (dApps)**: Applications running on blockchain networks rather than centralized servers
+* **Decentralized finance (DeFi)**: Financial services like lending, borrowing, and trading without traditional intermediaries
+* **Tokenization**: Representing real-world assets like real estate or art as blockchain tokens
+
+## Resources
+
+* [Bitcoin Whitepaper](https://bitcoin.org/bitcoin.pdf) - The original document by Satoshi Nakamoto that introduced Bitcoin and blockchain technology
+* [Mastering Bitcoin](https://github.com/bitcoinbook/bitcoinbook) by Andreas Antonopoulos - A technical guide to Bitcoin's operation
+* [Cryptographic Security Explainer](https://blog.coinbase.com/a-beginners-guide-to-cryptographic-keys-b162c8a9c404) - Detailed explanation of how cryptographic keys secure cryptocurrency systems
+* [Wallet Security Best Practices](https://www.gemini.com/cryptopedia/crypto-wallet-safety-seed-phrase-protection) - Guide for securing your cryptocurrency holdings
+* [CoinMarketCap](https://coinmarketcap.com/) - Resource for tracking cryptocurrency market data and learning about different cryptocurrencies
