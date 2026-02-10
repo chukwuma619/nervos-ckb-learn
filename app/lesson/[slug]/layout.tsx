@@ -24,7 +24,7 @@ export default async function LessonLayout({ children, params }: { children: Rea
           className="mb-4 flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4 shrink-0" />
-          Back to courses
+          Back
         </Link>
         <h2 className="mb-2 px-2 text-lg font-semibold">Lessons</h2>
         <nav className="flex flex-col gap-1">
