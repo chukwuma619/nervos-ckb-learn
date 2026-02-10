@@ -59,36 +59,36 @@ export default async function Lesson({
       </div>
       
       <nav
-            className="flex items-center justify-between gap-4 pt-8 mt-8 border-t border-border"
-            aria-label="Lesson navigation"
+        className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pt-6 sm:pt-8 mt-6 sm:mt-8 px-4 md:px-6 border-t border-border"
+        aria-label="Lesson navigation"
+      >
+        {previousLesson ? (
+          <Link
+            href={`/lesson/${previousLesson.slug}`}
+            className="inline-flex items-center justify-center sm:justify-start gap-2 rounded-lg border border-input bg-background px-4 py-3 sm:py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors min-w-0"
           >
-            {previousLesson ? (
-              <Link
-                href={`/lesson/${previousLesson.slug}`}
-                className="inline-flex items-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                <ChevronLeft className="h-4 w-4 shrink-0" />
-                <span className="truncate max-w-[200px] sm:max-w-none">
-                  Previous: {previousLesson.metadata.title}
-                </span>
-              </Link>
-            ) : (
-              <span />
-            )}
-            {nextLesson ? (
-              <Link
-                href={`/lesson/${nextLesson.slug}`}
-                className="inline-flex items-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors ml-auto"
-              >
-                <span className="truncate max-w-[200px] sm:max-w-none">
-                  Next: {nextLesson.metadata.title}
-                </span>
-                <ChevronRight className="h-4 w-4 shrink-0" />
-              </Link>
-            ) : (
-              <span />
-            )}
-          </nav>
+            <ChevronLeft className="h-4 w-4 shrink-0" />
+            <span className="truncate max-w-[200px] sm:max-w-none">
+              Previous: {previousLesson.metadata.title}
+            </span>
+          </Link>
+        ) : (
+          <span className="sm:min-w-[120px]" />
+        )}
+        {nextLesson ? (
+          <Link
+            href={`/lesson/${nextLesson.slug}`}
+            className="inline-flex items-center justify-center sm:justify-start gap-2 rounded-lg border border-input bg-background px-4 py-3 sm:py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors sm:ml-auto min-w-0"
+          >
+            <span className="truncate max-w-[200px] sm:max-w-none">
+              Next: {nextLesson.metadata.title}
+            </span>
+            <ChevronRight className="h-4 w-4 shrink-0" />
+          </Link>
+        ) : (
+          <span className="sm:min-w-[120px]" />
+        )}
+      </nav>
     </>
   )
 } 
