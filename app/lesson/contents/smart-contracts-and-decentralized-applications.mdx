@@ -1,0 +1,180 @@
+---
+title: 'Smart Contracts and Decentralized Applications'
+orderIndex: '4'
+description: 'Learn what smart contracts are, how they automate agreements, and how they form the foundation for decentralized applications (dApps). Explore real-world use cases.'
+---
+
+# Smart Contracts and Decentralized Applications
+
+## Learning outcomes
+
+By the end of this lesson, you will:
+- Understand what smart contracts are and how they function on blockchains
+- Recognize the key properties that make smart contracts powerful tools
+- Identify the relationship between smart contracts and decentralized applications (dApps)
+- Explore common use cases and examples of smart contracts and dApps in action
+- Understand the limitations and challenges of smart contract development
+- Know the basic tools and languages used to create smart contracts
+
+## What Are Smart Contracts?
+
+**Smart contracts** are self-executing programs stored on a blockchain that run automatically when predetermined conditions are met. Think of them as digital vending machines: you insert a coin, select your item, and the machine automatically provides your selection without requiring a human operator.
+
+```
+if (paymentReceived >= itemPrice) {
+    transferItem(buyer);
+    if (paymentReceived > itemPrice) {
+        transferChange(buyer, paymentReceived - itemPrice);
+    }
+}
+```
+
+This simple pseudocode illustrates the basic concept—once deployed on a blockchain, this code would execute automatically and irreversibly when triggered.
+
+Unlike traditional contracts that require legal enforcement, smart contracts are enforced by code. The terms of the agreement are directly written into lines of code that automatically execute when conditions are met.
+
+### Key Properties of Smart Contracts
+
+Smart contracts possess several fundamental properties that make them revolutionary:
+
+1. **Trustless execution**: They execute automatically according to their programming without requiring trust between parties.
+
+2. **Immutability**: Once deployed on the blockchain, the contract code cannot be altered, ensuring that the rules won't change.
+
+3. **Transparency**: All parties can verify the contract's code and monitor its execution on the public blockchain.
+
+4. **Determinism**: Given the same input, a smart contract will always produce the same output, making results predictable.
+
+5. **Disintermediation**: They remove the need for intermediaries like lawyers, brokers, or escrow services.
+
+#### Notes
+Smart contracts aren't actually "smart" in the sense of artificial intelligence. They're deterministic programs that do exactly what they're programmed to do—no more, no less. They don't adapt or learn over time like AI systems.
+
+## From Smart Contracts to Decentralized Applications (dApps)
+
+A **decentralized application (dApp)** is an application that runs on a distributed computing system—typically a blockchain network—rather than a single computer or server. While smart contracts handle the business logic and data storage, dApps add user interfaces and additional off-chain components to create complete applications.
+
+The relationship between smart contracts and dApps is similar to that between backend code and a complete web application:
+
+![Smart Contract and dApp relationship](https://example.com/placeholder)
+
+A typical dApp architecture includes:
+1. Smart contracts (on-chain) that handle core logic and data
+2. A frontend interface (website or mobile app)
+3. Connection methods (like Web3.js libraries)
+4. Often, off-chain components for enhanced functionality
+
+### Check your understanding
+Consider Uniswap, a popular decentralized exchange. Which parts would be handled by smart contracts, and which would be part of the broader dApp? (Think about the trading logic versus the user interface)
+
+## Popular Smart Contract Platforms
+
+Several blockchain platforms support smart contract functionality, each with unique characteristics:
+
+**Ethereum**: The pioneer of programmable blockchains, using the **Solidity** programming language. Most dApps today are built on Ethereum or Ethereum-compatible chains.
+
+**BNB Smart Chain**: A blockchain that offers Ethereum compatibility with higher throughput and lower fees.
+
+**Solana**: Known for high performance and low transaction costs, uses **Rust** for smart contract development.
+
+**Polkadot**: Enables interoperability between different blockchains through its parachain system.
+
+**Cardano**: Emphasizes academic research and formal verification for its smart contracts, uses **Plutus** (based on Haskell).
+
+## Real-World Use Cases
+
+Smart contracts and dApps are transforming numerous industries:
+
+### Decentralized Finance (DeFi)
+DeFi applications like lending platforms, decentralized exchanges, and yield farming protocols use smart contracts to automate financial services without intermediaries.
+
+Example: Aave allows users to lend and borrow cryptocurrencies without a bank through smart contracts that manage interest rates, collateral, and liquidations automatically.
+
+### Non-Fungible Tokens (NFTs)
+Smart contracts power NFT marketplaces and manage ownership rights, royalties, and transfers.
+
+```solidity
+// Simplified ERC-721 NFT mint function
+function mintNFT(address recipient, string memory tokenURI) public returns (uint256) {
+    _tokenIds.increment();
+    uint256 newItemId = _tokenIds.current();
+    
+    _mint(recipient, newItemId);
+    _setTokenURI(newItemId, tokenURI);
+    
+    return newItemId;
+}
+```
+
+This Solidity code shows how an NFT might be created and assigned to an owner.
+
+### Supply Chain Management
+Smart contracts track products through complex supply chains, ensuring authenticity and compliance.
+
+Example: VeChain helps companies verify that luxury goods, pharmaceuticals, and food products are authentic and properly handled throughout the supply chain.
+
+### Governance
+Decentralized autonomous organizations (DAOs) use smart contracts to manage voting, treasury funds, and organizational rules.
+
+Example: MakerDAO governs the DAI stablecoin through proposals and votes recorded on-chain, with execution handled by smart contracts.
+
+### Insurance
+Parametric insurance policies can automatically pay out when verifiable conditions are met.
+
+Example: Etherisc offers flight delay insurance that automatically compensates travelers when flights are delayed, using oracle data feeds.
+
+## Challenges and Limitations
+
+Despite their potential, smart contracts face several challenges:
+
+1. **Security vulnerabilities**: Once deployed, bugs can't be easily fixed, and exploits can lead to significant financial losses. The 2016 DAO hack and numerous DeFi exploits demonstrate this risk.
+
+2. **Oracle problem**: Smart contracts can't directly access real-world information and rely on **oracles** to feed external data to them.
+
+3. **Scalability issues**: High transaction volumes can lead to network congestion and increased costs, as seen during NFT minting frenzies.
+
+4. **Legal uncertainty**: The regulatory status of smart contracts varies by jurisdiction, creating compliance challenges.
+
+5. **Irreversibility**: While a feature, the inability to reverse transactions can be problematic when errors occur.
+
+### Notes
+Unlike traditional software that can be patched quickly, smart contract bugs often require complex migration procedures or entirely new deployments. This is why many projects undergo extensive auditing before deployment.
+
+## Building Smart Contracts
+
+To create smart contracts, developers typically need:
+
+1. **Programming knowledge** in languages like Solidity (Ethereum), Rust (Solana), or others specific to the target blockchain.
+
+2. **Development tools** such as Hardhat, Truffle, or Foundry that provide testing environments, deployment utilities, and debugging capabilities.
+
+3. **Wallet connections** through libraries like Web3.js or ethers.js that allow dApps to interact with users' cryptocurrency wallets.
+
+4. **Testing frameworks** to thoroughly simulate contract behavior before deployment.
+
+A simplified development workflow looks like this:
+1. Design the contract logic
+2. Write and test the code in a local environment
+3. Deploy to a testnet for real-world testing
+4. Audit for security vulnerabilities
+5. Deploy to the main network
+
+## The Future of Smart Contracts
+
+Smart contracts continue to evolve with developments like:
+
+- **Layer 2 scaling solutions** that address throughput limitations
+- **Cross-chain interoperability** allowing contracts to work across different blockchains
+- **Privacy-preserving techniques** that maintain confidentiality while preserving verification capabilities
+- **Formal verification** methods that mathematically prove contract correctness
+
+As of February 2026, we're seeing increasing adoption of smart contracts in enterprise environments, with major financial institutions and corporations embracing aspects of this technology for specific use cases.
+
+## Resources
+
+- [Ethereum Smart Contract Best Practices](https://consensys.github.io/smart-contract-best-practices/) - Comprehensive security guidelines and recommendations
+- [OpenZeppelin Contracts](https://openzeppelin.com/contracts/) - Library of secure, reusable smart contract components
+- [CryptoZombies](https://cryptozombies.io/) - Interactive coding tutorials for learning Solidity
+- [Solidity Documentation](https://docs.soliditylang.org/) - Official language documentation
+- [DApp University](https://www.dappuniversity.com/) - Educational resources for blockchain developers
+- [The Web3 Blockchain Developer Roadmap](https://web3.career/web3-roadmap) - Comprehensive guide for aspiring blockchain developers
