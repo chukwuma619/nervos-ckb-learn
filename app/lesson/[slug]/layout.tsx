@@ -6,9 +6,16 @@ import { ArrowLeft } from "lucide-react";
 export default async function LessonLayout({ children, params }: { children: React.ReactNode, params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const lessons = getLessons();
+
   if (!lessons) {
     return <div>No lessons found</div>;
   }
+
+  lessons.sort((a, b) => {
+    const orderA = parseInt(a.metadata.orderIndex ?? '0', 10)
+    const orderB = parseInt(b.metadata.orderIndex ?? '0', 10)
+    return orderA - orderB
+  })
   return (
     <div className="flex min-h-0 flex-1">
       <aside className="w-64 shrink-0 overflow-y-auto  inset-y-0 fixed border-r bg-muted/40 p-4">
