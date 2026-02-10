@@ -1,0 +1,144 @@
+---
+title: 'Nervos Layer 1: CKB Blockchain Basics'
+orderIndex: '7'
+description: 'Understand how CKB functions as the base layer (Layer 1) of Nervos Network. Learn about its proof-of-work consensus mechanism and how it secures the network.'
+---
+
+# Nervos Layer 1: CKB Blockchain Basics
+
+## Learning outcomes
+
+By the end of this lesson, you will be able to:
+- Explain the purpose and function of the Common Knowledge Base (CKB) as Nervos Network's Layer 1
+- Describe the NC-MAX consensus mechanism and how it secures the blockchain
+- Understand CKB's block structure and transaction validation process
+- Identify how CKB balances security, decentralization, and scalability
+- Explain how CKB's design supports both value and state preservation
+
+## The Foundation: What is CKB?
+
+Common Knowledge Base (CKB) is the Layer 1 blockchain of the Nervos Network. Think of it as the secure foundation that everything else in the ecosystem builds upon. Just as Bitcoin serves as a trustless value storage system, CKB functions as a trustless state storage system.
+
+```
+Layer 2 Solutions (Computation/Applications)
+        ↑
+Layer 1: CKB (Security/State Preservation)
+```
+
+CKB is specifically designed to be the secure base layer that:
+- Stores and validates the state of the entire network
+- Secures assets through a proof-of-work consensus mechanism
+- Provides cryptographic guarantees for data integrity
+- Acts as the settlement layer for transactions from higher layers
+
+### Notes
+
+CKB differs from other Layer 1 blockchains in its specialized focus on state preservation rather than trying to handle all blockchain functions equally. This design philosophy prioritizes security and decentralization at the base layer while moving computation to Layer 2 solutions.
+
+## NC-MAX: CKB's Consensus Mechanism
+
+CKB employs a consensus algorithm called NC-MAX (Nakamoto Consensus - Maximum Available). It's a proof-of-work (PoW) consensus mechanism derived from Bitcoin's Nakamoto Consensus but with important optimizations.
+
+In NC-MAX:
+1. Miners compete to solve complex cryptographic puzzles
+2. The first to solve a valid puzzle earns the right to propose a new block
+3. The network validates the block according to consensus rules
+4. Once validated, the block is added to the chain
+
+The key differentiator in NC-MAX is its handling of orphan blocks (valid blocks that aren't included in the main chain). NC-MAX incorporates the work done in orphan blocks by referencing them, creating incentives for miners to build on the main chain while acknowledging the contributions of all valid work.
+
+```
+Main Chain:  A → B → C → D → E
+                    ↑
+Orphan Chain:      C' → D'
+                   (referenced by main chain)
+```
+
+### Notes
+
+NC-MAX's approach to orphan blocks helps maintain network security even during network partitions or latency issues. This design reduces the economic waste of orphan blocks while preserving the security benefits of proof-of-work.
+
+## CKB's Block Structure
+
+A CKB block consists of several key components:
+
+1. **Block header**: Contains metadata like timestamp, difficulty target, previous block hash, and a Merkle root of transactions
+2. **Uncle blocks**: References to valid orphan blocks (part of NC-MAX)
+3. **Transactions**: The actual state changes being proposed
+4. **Proposals**: Transaction IDs that may be included in future blocks
+
+When a new block is created approximately every 8 seconds, it's broadcast to the network. Other nodes verify:
+- The proof-of-work solution is valid
+- All transactions in the block follow consensus rules
+- All state transitions are valid according to their scripts
+
+### Notes
+
+The block interval of ~8 seconds represents a balance between confirmation speed and network security. This is faster than Bitcoin (~10 minutes) but slower than some PoS chains, reflecting CKB's security-first approach.
+
+## State Verification and Security
+
+CKB's primary responsibility is to verify that all state transitions are valid according to their programmed rules. This verification happens through:
+
+1. **Script execution**: Every transaction must satisfy the conditions specified in the lock and type scripts of the cells it modifies
+2. **CKB-VM**: The RISC-V based virtual machine executes these scripts to validate transactions
+3. **Consensus verification**: Nodes check that all transactions follow network rules
+
+This verification-focused approach means CKB doesn't try to run complex applications directly on Layer 1. Instead, it provides rock-solid guarantees that whatever state is stored on CKB is valid according to its defined rules.
+
+## The Security, Decentralization, Scalability Triangle
+
+CKB makes specific design choices in addressing the blockchain trilemma:
+
+**Security**: Prioritized through:
+- Proof-of-work consensus (battle-tested approach)
+- Economic incentives for long-term state storage
+- Conservative approach to protocol upgrades
+
+**Decentralization**: Maintained through:
+- ASIC-resistant mining algorithm (Eaglesong)
+- Sustainable state growth via state rent mechanism
+- Low hardware requirements for node operation
+
+**Scalability**: Addressed via:
+- Moving computation off-chain to Layer 2 solutions
+- Focusing Layer 1 on verification, not computation
+- State pruning mechanisms for node efficiency
+
+```
+          Security
+            /\
+           /  \
+          /    \
+         /      \
+Decentralization-Scalability
+```
+
+CKB deliberately optimizes for security and decentralization at Layer 1, while addressing scalability primarily through its Layer 2 solutions.
+
+### Check your understanding
+
+What's the primary function of CKB as Nervos Network's Layer 1, and how does this differ from blockchains that try to handle all functions on a single layer?
+
+## Economic Security Model
+
+CKB's security is reinforced by its economic model, which creates strong incentives for miners and stakeholders:
+
+1. **Mining rewards**: Miners receive newly minted CKBytes for securing the network
+2. **Transaction fees**: Paid by users for processing transactions
+3. **State rent**: Users lock CKBytes proportional to the state space they occupy
+4. **Nervos DAO**: A mechanism to protect long-term token holders from inflation
+
+This economic design ensures that:
+- Miners have ongoing incentives to secure the network
+- The cost of attack remains prohibitively high
+- Users who consume network resources bear appropriate costs
+- The system remains economically viable in the long term
+
+## Resources
+
+- [CKB Consensus Paper](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md) - Detailed technical explanation of the NC-MAX consensus mechanism
+- [Nervos Network Documentation](https://docs.nervos.org) - Comprehensive reference for all aspects of CKB
+- [CKB Development Blog](https://medium.com/nervosnetwork) - Updates and technical insights from the development team
+- [CKB GitHub Repository](https://github.com/nervosnetwork/ckb) - Source code and technical implementation details
+- [Nervos Network Economic Paper](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md) - In-depth analysis of CKB's economic model and security approach
