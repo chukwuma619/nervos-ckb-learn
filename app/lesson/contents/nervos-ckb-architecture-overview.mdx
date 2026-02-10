@@ -1,0 +1,120 @@
+---
+title: 'Nervos CKB Architecture Overview'
+orderIndex: '6'
+description: 'Explore the high-level architecture of Nervos CKB (Common Knowledge Base) and understand its layered approach to blockchain design. Learn about the separation of computation and state storage.'
+---
+# Nervos CKB Architecture Overview
+
+## Learning outcomes
+
+- Identify the core components of the Nervos CKB architecture
+- Explain how the cell model fundamentally differs from account-based models
+- Describe how the layered architecture separates computation from state storage
+- Understand how CKB-VM enables flexible and secure smart contract execution
+- Recognize how the state model enables unique economic properties
+- Explain the role of the NC-MAX consensus mechanism in the CKB architecture
+
+## The Fundamental Architecture of Nervos CKB
+
+At its core, Nervos Common Knowledge Base (CKB) is a blockchain built around a unique "cell model" for managing state. Unlike account-based blockchains that track balances and state in accounts, CKB stores all state as cells—discrete, immutable data objects similar to Bitcoin's UTXOs but with enhanced capabilities.
+
+Let's examine a simple cell:
+
+```
+{
+  capacity: 200 bytes,
+  lock: <script hash>,
+  type: <script hash>,
+  data: <arbitrary data>
+}
+```
+
+This cell stores 200 bytes of capacity, has lock and type scripts that control access and behavior, and can hold any arbitrary data. This fundamental structure is the building block for all state storage on Nervos CKB.
+
+### The Cell-based State Model
+
+The cell model creates a clear separation between:
+
+1. **State storage** — Cells hold the data/state
+2. **State transition rules** — Scripts define how state can change
+
+This separation is one of CKB's most important architectural features. Every piece of data stored on-chain is contained in a cell, and cells are organized in a directed acyclic graph (DAG) through references in transactions.
+
+**Note:** Unlike Ethereum where contracts and accounts have fixed locations, in CKB there are no fixed addresses or locations. A cell exists until it's consumed by a transaction, which typically creates new cells.
+
+## Layered Architecture for Scalability
+
+Nervos CKB implements a multi-layer architecture that addresses the blockchain trilemma (decentralization, security, and scalability) by pushing different responsibilities to different layers:
+
+### Layer 1: Common Knowledge Base (CKB)
+
+The foundational layer focuses on:
+
+- **Security**: Using proof-of-work consensus
+- **State verification**: Ensuring all state transitions follow rules
+- **Settlement**: Final settlement of transactions
+- **Store of Value**: A secure place to store assets
+
+Layer 1 deliberately limits computation to ensure the blockchain remains decentralized, secure, and minimizes state growth.
+
+### Layer 2: Computation Layers
+
+Layer 2 protocols handle computation off-chain, sending only verified results to Layer 1:
+
+- **Godwoken**: An EVM-compatible optimistic rollup
+- **Axon**: A framework for application-specific sidechains
+- **Other solutions**: State channels, Plasma-like chains
+
+This separation creates a "state-focused" Layer 1 and "computation-focused" Layer 2 architecture.
+
+## CKB-VM: The Virtual Machine
+
+At the heart of transaction verification is the CKB-VM, a RISC-V based virtual machine. This architectural choice has significant implications:
+
+```
+Transaction
+├── Inputs: [Cell1, Cell2, ...]
+├── Outputs: [NewCell1, NewCell2, ...]
+└── Verification: CKB-VM executes lock and type scripts
+```
+
+Unlike Ethereum's EVM which was custom-built for blockchain use, CKB-VM uses the RISC-V instruction set—an open standard in hardware chip design. This brings several advantages:
+
+1. **Hardware compatibility**: Scripts can potentially be executed directly on hardware
+2. **Language flexibility**: Developers can use any language that compiles to RISC-V
+3. **Future-proofing**: The VM can evolve alongside RISC-V industry standards
+
+**Note:** CKB-VM executes scripts during transaction verification, not during block creation. This makes CKB's execution model much closer to Bitcoin's than to Ethereum's.
+
+## State Storage and the Economic Model
+
+The architecture of CKB treats state storage as a first-class concern. Every byte of data stored on-chain requires a proportional amount of CKBytes to be locked in the cell, creating a direct economic cost for state occupation.
+
+This state model enables the economic model where:
+
+1. **State users** lock CKBytes when storing data
+2. **Investors** can deposit CKBytes in the NervosDAO to hedge against inflation
+3. **Miners** are rewarded through a base issuance and state occupation fees
+
+This architectural choice ensures that the cost of network maintenance is primarily borne by those using the blockchain for storage.
+
+## NC-MAX Consensus
+
+Nervos CKB uses a modified Nakamoto Consensus called NC-MAX (Nervos Consensus - Mining with Auxiliary). This consensus mechanism:
+
+1. Uses proof-of-work for security (based on Eaglesong hash function)
+2. Allows miners to simultaneously mine Bitcoin through merged mining
+3. Incorporates a difficulty adjustment algorithm that responds to hashrate changes
+4. Creates an average block time of ~8 seconds
+
+## Check your understanding
+
+Consider the difference between Ethereum's account model and CKB's cell model. In Ethereum, to update a contract's state, you'd call a method on a contract at a fixed address. How would this same operation conceptually work in the CKB cell model?
+
+## Resources
+
+- [Nervos CKB RFC: Cell Model](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md) - The formal specification of the cell model
+- [Understanding the CKB-VM](https://docs.nervos.org/docs/basics/concepts/ckb-vm/) - Detailed explanation of the virtual machine architecture
+- [Nervos Layer 2 Documentation](https://docs.nervos.org/docs/basics/concepts/layer2/) - Overview of the Layer 2 scaling solutions
+- [NC-MAX Technical Paper](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md) - Technical details of the consensus mechanism
+- [The CKB Economic Paper](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md) - How the architecture enables the economic model
