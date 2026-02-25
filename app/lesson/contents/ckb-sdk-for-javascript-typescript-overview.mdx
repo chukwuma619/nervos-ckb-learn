@@ -1,0 +1,262 @@
+---
+title: 'CKB SDK for JavaScript/TypeScript: Overview'
+orderIndex: '14'
+description: 'Get an introduction to the CKB SDK for JavaScript/TypeScript. Understand its components, capabilities, and how it simplifies interactions with the Nervos CKB blockchain.'
+---
+# CKB SDK for JavaScript/TypeScript: Overview
+
+## Learning outcomes
+
+By the end of this lesson, you will be able to:
+
+- Explain the purpose and structure of the CKB JavaScript SDK
+- Identify the main components of the CKB JavaScript SDK ecosystem
+- Understand how CKB SDKs fit into the overall development workflow
+- Recognize when to use different SDK libraries based on your needs
+- Configure a basic project to work with the CKB JavaScript SDK
+- Execute fundamental blockchain operations using the SDK
+
+## What is the CKB SDK?
+
+The CKB SDK (Software Development Kit) for JavaScript/TypeScript is a collection of libraries and tools that allow developers to interact with the Nervos CKB blockchain. Rather than having to manually craft low-level RPC calls or understand the intricate details of CKB's data structures, the SDK provides convenient abstractions that make blockchain development more accessible and less error-prone.
+
+Think of the SDK as a bridge between your application code and the CKB blockchain:
+
+```
+Your Application → CKB SDK → CKB Node → CKB Blockchain
+```
+
+## The CKB JavaScript SDK Ecosystem
+
+The JavaScript SDK for CKB is organized into several packages, each with specific responsibilities:
+
+### 1. Lumos
+
+**Lumos** is the flagship JavaScript/TypeScript framework for CKB development. It's a comprehensive solution that includes:
+
+- A cell collection and indexing system
+- Transaction construction and signing
+- High-level abstractions for common operations
+- Type definitions for CKB data structures
+
+```javascript
+// Example of connecting to CKB using Lumos
+import { Indexer, RPC } from "@ckb-lumos/lumos";
+
+// Connect to a CKB node
+const rpc = new RPC("http://127.0.0.1:8114");
+const indexer = new Indexer("http://127.0.0.1:8114");
+
+// Start the indexer
+await indexer.start();
+
+// Now you can query cells and perform operations
+```
+
+### 2. ckb-sdk-js
+
+The **ckb-sdk-js** package is a more low-level interface to CKB. It provides:
+
+- Direct access to CKB's RPC methods
+- Cryptographic utilities
+- Transaction building primitives
+- Address generation and parsing
+
+```javascript
+// Example of connecting to CKB using ckb-sdk-js
+const CKB = require('@nervosnetwork/ckb-sdk-js');
+const ckb = new CKB('http://127.0.0.1:8114');
+
+// Now you can call RPC methods directly
+const nodeInfo = await ckb.rpc.localNodeInfo();
+console.log("Node version:", nodeInfo.version);
+```
+
+### 3. PW-SDK
+
+**PW-SDK** (Portal Wallet SDK) focuses on web-based integration and browser environments. It's particularly useful for:
+
+- Web application integration
+- Wallet connection features
+- Simplified dApp development
+
+### 4. OffCKB
+
+As we've seen in previous lessons, **OffCKB** provides an all-in-one development environment with the SDK components included.
+
+#### Notes
+
+The SDK ecosystem continues to evolve, with new libraries and tools being developed by the Nervos community. The modular approach allows you to choose the right level of abstraction for your project. For beginners, Lumos is generally recommended as it provides more guardrails and developer-friendly abstractions.
+
+## Setting Up the CKB SDK
+
+Here's how to set up a basic project with the CKB SDK:
+
+### For a JavaScript Project
+
+```bash
+# Create a new directory for your project
+mkdir my-ckb-project
+cd my-ckb-project
+
+# Initialize a new npm project
+npm init -y
+
+# Install the Lumos framework
+npm install @ckb-lumos/lumos
+```
+
+### For a TypeScript Project
+
+```bash
+# Create a new directory for your project
+mkdir my-ckb-typescript-project
+cd my-ckb-typescript-project
+
+# Initialize a new npm project
+npm init -y
+
+# Install TypeScript and the Lumos framework
+npm install typescript ts-node @types/node @ckb-lumos/lumos
+
+# Initialize TypeScript configuration
+npx tsc --init
+```
+
+Your `tsconfig.json` file should include settings like these:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+## Basic SDK Operations
+
+Let's explore some fundamental operations you can perform with the CKB SDK:
+
+### 1. Connecting to a Node
+
+```javascript
+// JavaScript
+const { RPC } = require("@ckb-lumos/lumos");
+const rpc = new RPC("http://127.0.0.1:8114");
+
+// TypeScript
+import { RPC } from "@ckb-lumos/lumos";
+const rpc = new RPC("http://127.0.0.1:8114");
+```
+
+### 2. Getting Blockchain Information
+
+```javascript
+async function getBlockchainInfo() {
+  // Get the tip block header
+  const tipHeader = await rpc.getTipHeader();
+  console.log("Current block height:", tipHeader.number);
+
+  // Get blockchain information
+  const info = await rpc.getBlockchainInfo();
+  console.log("Chain:", info.chain);
+  console.log("Epoch:", info.epoch);
+}
+```
+
+### 3. Working with Addresses
+
+```javascript
+import { helpers } from "@ckb-lumos/lumos";
+
+// Generate a new address from a private key (represented as hex string)
+const privateKey = "0x..."; // Your private key here
+const publicKey = helpers.privateKeyToPublicKey(privateKey);
+const address = helpers.publicKeyToAddress(publicKey);
+console.log("Generated address:", address);
+```
+
+### 4. Querying Cell Information
+
+```javascript
+import { Indexer } from "@ckb-lumos/lumos";
+
+async function queryCell() {
+  const indexer = new Indexer("http://127.0.0.1:8114");
+  await indexer.start();
+
+  // Query all live cells by lock script
+  const cells = await indexer.collectCells({
+    lock: {
+      codeHash: "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+      hashType: "type",
+      args: "0x..."  // Your address args here
+    }
+  });
+
+  console.log("Found cells:", cells);
+}
+```
+
+### 5. Building and Sending Transactions
+
+This is a simplified example. In practice, transaction building requires understanding of CKB's cell model, which we'll cover in future lessons.
+
+```javascript
+import { commons, helpers } from "@ckb-lumos/lumos";
+
+async function sendTransaction() {
+  // Simplified transaction building
+  const txSkeleton = helpers.TransactionSkeleton({ cellProvider: indexer });
+
+  // Add inputs, outputs, and build the transaction
+  // ... (detailed steps will be covered in future lessons)
+
+  // Sign the transaction
+  const signedTx = commons.signTransaction(txSkeleton, privateKey);
+
+  // Send to the network
+  const txHash = await rpc.sendTransaction(signedTx);
+  console.log("Transaction sent:", txHash);
+}
+```
+
+## SDK vs. Direct RPC Calls
+
+You might wonder why we use the SDK instead of directly making JSON-RPC calls. Here are the key benefits:
+
+1. **Type safety**: The SDK provides TypeScript definitions for CKB data structures
+2. **Abstraction**: Complex operations are simplified through helper functions
+3. **Security**: The SDK handles serialization and cryptographic operations securely
+4. **Developer experience**: Higher-level abstractions make development faster
+
+## Check your understanding
+
+Try to implement a function that retrieves and displays the balance of a CKB address using the Lumos SDK. Your function should:
+
+1. Accept a CKB address as input
+2. Query all cells owned by that address
+3. Calculate the total CKB capacity (balance) of those cells
+4. Return the balance in CKB (not shannon)
+
+Think about:
+- Which SDK components would you need?
+- How would you convert the lock script from the address?
+- How would you handle the conversion from shannon (the base unit) to CKB?
+
+## Resources
+
+- [CKB Lumos Documentation](https://github.com/nervosnetwork/lumos)
+- [CKB SDK JS Documentation](https://github.com/nervosnetwork/ckb-sdk-js)
+- [Nervos Developer Portal](https://docs.nervos.org/)
+- [Lumos Examples Repository](https://github.com/nervosnetwork/lumos-examples)
+- [CKB Transaction Structure Documentation](https://docs.nervos.org/docs/reference/cell/)
+- [Nervos CKB Cell Model Guide](https://docs.nervos.org/docs/basics/concepts/cell-model/)

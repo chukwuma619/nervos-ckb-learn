@@ -1,0 +1,401 @@
+---
+title: 'Introduction to TypeScript for Blockchain Applications'
+orderIndex: '13'
+description: 'Learn how TypeScript enhances JavaScript for blockchain development through strong typing and advanced object-oriented features. Set up a TypeScript environment for CKB development.'
+---
+# Introduction to TypeScript for Blockchain Applications
+
+## Learning outcomes
+
+- Understand how TypeScript enhances JavaScript development for blockchain applications
+- Set up a complete TypeScript development environment for CKB projects
+- Implement proper type definitions for blockchain data structures
+- Configure TypeScript for optimal blockchain development workflows
+- Convert JavaScript blockchain code to type-safe TypeScript equivalents
+- Apply TypeScript interfaces to model CKB cell structures
+
+## Why TypeScript for Blockchain?
+
+Blockchain development demands precision. When working with financial assets, cryptographic operations, and complex data structures, errors can be costly and difficult to debug. TypeScript extends JavaScript with a powerful type system that catches errors at compile time rather than runtime.
+
+Consider this JavaScript example of creating a transaction on CKB:
+
+```javascript
+function sendTransaction(recipient, amount) {
+  // Build and send transaction
+  return ckb.sendTransaction({
+    to: recipient,
+    value: amount,
+    fee: 0.0001
+  });
+}
+```
+
+Without type checking, this function could silently accept invalid data types, potentially leading to runtime errors or security vulnerabilities. What if `amount` is accidentally provided as a string instead of a number? What if the recipient address is malformed?
+
+## TypeScript Fundamentals for Blockchain Developers
+
+TypeScript is a superset of JavaScript that compiles to plain JavaScript. It adds optional static typing and other features that make development more robust, especially for complex systems like blockchain applications.
+
+### Static Typing
+
+The core benefit of TypeScript is its type system. Here's our previous example rewritten with TypeScript:
+
+```typescript
+interface Transaction {
+  to: string;
+  value: bigint;
+  fee: bigint;
+}
+
+function sendTransaction(recipient: string, amount: bigint): Promise<string> {
+  // Build and send transaction
+  return ckb.sendTransaction({
+    to: recipient,
+    value: amount,
+    fee: BigInt(100000) // 0.0001 CKB in shannon
+  });
+}
+```
+
+Now, TypeScript will catch errors if you try to pass incorrect types to this function. The return type `Promise<string>` indicates that this asynchronous function will resolve to a transaction hash (string).
+
+### Advanced Types for Blockchain Data
+
+Blockchain applications often deal with specialized data types like addresses, hashes, and cryptographic keys. TypeScript allows you to create precise types for these:
+
+```typescript
+// Define types specific to CKB
+type CKBAddress = string;
+type Hash256 = string;
+type Capacity = bigint;
+
+// Cell data structure with proper types
+interface Cell {
+  capacity: Capacity;
+  lock: Script;
+  type?: Script;
+  data?: string;
+}
+
+interface Script {
+  codeHash: Hash256;
+  hashType: 'data' | 'type' | 'data1' | 'data2';
+  args: string;
+}
+```
+
+#### Notes
+
+The `?` symbol indicates optional properties. In CKB's cell model, the type script and data are optional, while capacity and lock script are required.
+
+## Setting Up a TypeScript Environment for CKB Development
+
+Let's set up a complete TypeScript environment for developing CKB applications.
+
+### 1. Initialize your project
+
+First, create a new directory and initialize a Node.js project:
+
+```bash
+mkdir my-ckb-ts-project
+cd my-ckb-ts-project
+npm init -y
+```
+
+### 2. Install TypeScript and CKB dependencies
+
+```bash
+# Install TypeScript and ts-node
+npm install typescript ts-node @types/node --save-dev
+
+# Install CKB SDK
+npm install @ckb-lumos/lumos
+```
+
+### 3. Create a TypeScript configuration file
+
+Create a `tsconfig.json` file in your project root:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020", "DOM"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "declaration": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+#### Notes
+
+This configuration uses ES2020, which supports features like BigInt, nullish coalescing, and optional chaining—all useful for blockchain development. The `strict` flag enables thorough type checking.
+
+### 4. Set up project structure
+
+Create a basic project structure:
+
+```bash
+mkdir -p src/types src/utils src/scripts
+touch src/index.ts
+```
+
+### 5. Define CKB-specific types
+
+Create `src/types/ckb.ts` to hold your CKB-specific type definitions:
+
+```typescript
+// src/types/ckb.ts
+
+export type CKBAddress = string;
+export type Hash256 = string;
+export type Capacity = bigint;
+
+export interface Script {
+  codeHash: Hash256;
+  hashType: 'data' | 'type' | 'data1' | 'data2';
+  args: string;
+}
+
+export interface Cell {
+  cellOutput: {
+    capacity: Capacity;
+    lock: Script;
+    type?: Script;
+  };
+  data: string;
+  outPoint?: {
+    txHash: Hash256;
+    index: string;
+  };
+  blockHash?: Hash256;
+}
+
+export interface Transaction {
+  version: string;
+  cellDeps: CellDep[];
+  headerDeps: Hash256[];
+  inputs: Input[];
+  outputs: Output[];
+  outputs_data: string[];
+  witnesses: string[];
+}
+
+export interface CellDep {
+  outPoint: {
+    txHash: Hash256;
+    index: string;
+  };
+  depType: 'code' | 'depGroup';
+}
+
+export interface Input {
+  previousOutput: {
+    txHash: Hash256;
+    index: string;
+  };
+  since: string;
+}
+
+export interface Output {
+  capacity: string;
+  lock: Script;
+  type?: Script;
+}
+```
+
+## Creating a TypeScript CKB Application
+
+Now let's create a simple application that connects to a CKB node and performs basic operations.
+
+### 1. Basic Connection Script
+
+Create `src/index.ts`:
+
+```typescript
+// src/index.ts
+import { RPC } from '@ckb-lumos/lumos';
+import { Hash256 } from './types/ckb';
+
+async function main(): Promise<void> {
+  try {
+    // Connect to local CKB node
+    const rpc = new RPC("http://127.0.0.1:8114");
+
+    // Get tip block hash
+    const tipHash: Hash256 = await rpc.getTipBlockHash();
+    console.log("Current tip block hash:", tipHash);
+
+    // Get tip block
+    const tipBlock = await rpc.getBlock(tipHash);
+    console.log("Current block number:", tipBlock.header.number);
+
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
+}
+
+main();
+```
+
+### 2. Create a utility for address generation
+
+Create `src/utils/address.ts`:
+
+```typescript
+// src/utils/address.ts
+import { key, helpers } from '@ckb-lumos/lumos';
+import { CKBAddress } from '../types/ckb';
+
+export function generateAddress(): { address: CKBAddress, privateKey: string } {
+  // Generate a random private key
+  const privateKey: string = key.generateSk();
+
+  // Derive public key from private key
+  const publicKey: string = key.skToPublicKey(privateKey);
+
+  // Generate address from public key (testnet format)
+  const address: CKBAddress = helpers.generateFromPrivateKey(privateKey);
+
+  return { address, privateKey };
+}
+
+export function privateKeyToAddress(privateKey: string): CKBAddress {
+  return helpers.generateFromPrivateKey(privateKey);
+}
+```
+
+### 3. Create a simple transaction utility
+
+Create `src/utils/transaction.ts`:
+
+```typescript
+// src/utils/transaction.ts
+import { RPC, commons, helpers } from '@ckb-lumos/lumos';
+import { Capacity, CKBAddress, Hash256 } from '../types/ckb';
+
+export async function transferCapacity(
+  rpc: RPC,
+  privateKey: string,
+  toAddress: CKBAddress,
+  amount: Capacity
+): Promise<Hash256> {
+  // Initialize Lumos config (assuming we're using a devnet)
+  commons.initializeConfig(commons.predefined.AGGRON4);
+
+  // Create a transaction skeleton
+  let txSkeleton = helpers.TransactionSkeleton({ enableTypeAndHashType: true });
+
+  // Get the from address from private key
+  const fromAddress = helpers.generateFromPrivateKey(privateKey);
+
+  // Add output cell (the target recipient)
+  txSkeleton = commons.common.transfer(
+    txSkeleton,
+    [fromAddress],
+    toAddress,
+    amount
+  );
+
+  // Sign the transaction
+  txSkeleton = commons.common.prepareSigningEntries(txSkeleton);
+  const message = txSkeleton.get("signingEntries").get(0)!.message;
+  const signature = key.signRecoverable(message, privateKey);
+
+  // Add witness
+  const tx = helpers.sealTransaction(txSkeleton, [signature]);
+
+  // Send transaction
+  const txHash = await rpc.sendTransaction(tx, "passthrough");
+  return txHash;
+}
+```
+
+## JavaScript to TypeScript Migration for Blockchain Code
+
+When migrating existing JavaScript blockchain code to TypeScript, follow these steps:
+
+1. **Rename files** from `.js` to `.ts`
+2. **Create type definitions** for your data structures
+3. **Add type annotations** to functions and variables
+4. **Handle the `any` type** carefully - avoid using it when possible
+5. **Address TypeScript compiler warnings**
+
+### Example: Migrating a CKB Cell Query Function
+
+Here's a JavaScript function that queries CKB cells:
+
+```javascript
+// Before: JavaScript
+async function getCells(address) {
+  const collector = indexer.collector({
+    lock: parseAddress(address),
+  });
+
+  const cells = [];
+  for await (const cell of collector.collect()) {
+    cells.push(cell);
+  }
+
+  return cells;
+}
+```
+
+TypeScript version:
+
+```typescript
+// After: TypeScript
+import { Indexer, helpers } from '@ckb-lumos/lumos';
+import { Script, Cell, CKBAddress } from './types/ckb';
+
+async function getCells(indexer: Indexer, address: CKBAddress): Promise<Cell[]> {
+  const lock: Script = helpers.parseAddress(address);
+
+  const collector = indexer.collector({
+    lock,
+  });
+
+  const cells: Cell[] = [];
+  for await (const cell of collector.collect()) {
+    cells.push(cell);
+  }
+
+  return cells;
+}
+```
+
+## Check your understanding
+
+Consider this JavaScript code that gets the CKB balance for an address:
+
+```javascript
+async function getBalance(address) {
+  const cells = await getCells(address);
+  return cells.reduce((sum, cell) => sum + Number(cell.cellOutput.capacity), 0);
+}
+```
+
+How would you convert this to TypeScript, addressing any potential issues? Think about:
+
+1. Type annotations
+2. Handling large numbers properly in blockchain contexts
+3. Parameter validation
+4. Return type specification
+
+## Resources
+
+- [TypeScript Official Documentation](https://www.typescriptlang.org/docs/)
+- [Nervos CKB Lumos SDK Documentation](https://github.com/nervosnetwork/lumos)
+- [TypeScript Deep Dive](https://basarat.gitbook.io/typescript/) - A comprehensive guide to TypeScript
+- [Effective TypeScript: 62 Specific Ways to Improve Your TypeScript](https://effectivetypescript.com/) - Book by Dan Vanderkam
+- [TypeScript ESLint](https://github.com/typescript-eslint/typescript-eslint) - Tooling for type-aware linting
+- [CKB TypeScript Examples Repository](https://github.com/nervosnetwork/lumos-examples) - Practical TypeScript examples for CKB development

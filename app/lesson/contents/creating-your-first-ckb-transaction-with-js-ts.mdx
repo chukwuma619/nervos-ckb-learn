@@ -1,0 +1,253 @@
+---
+title: 'Creating Your First CKB Transaction with JS/TS'
+orderIndex: '15'
+description: 'Build your first transaction on the Nervos CKB testnet using JavaScript/TypeScript. Learn about transaction structure, signatures, and how to submit transactions to the network.'
+---
+# Creating Your First CKB Transaction with JS/TS
+
+## Learning outcomes
+
+By the end of this lesson, you will be able to:
+
+* Understand the structure of CKB transactions and their key components
+* Create and sign a basic CKB transaction using JavaScript/TypeScript
+* Submit a transaction to the CKB testnet
+* Verify transaction confirmation on the blockchain
+* Debug common transaction errors
+* Understand the difference between capacity transfer and data storage transactions
+
+## Understanding CKB Transactions
+
+In Nervos CKB, a transaction is fundamentally a state transition that consumes existing cells as inputs and creates new cells as outputs. Unlike account-based blockchains like Ethereum, CKB's cell model resembles Bitcoin's UTXO model but with greater flexibility for storing arbitrary data.
+
+### Transaction Structure
+
+A CKB transaction consists of these key components:
+
+* **Inputs**: The cells you're spending (similar to UTXOs)
+* **Outputs**: The new cells you're creating
+* **Output Data**: The data payloads associated with the output cells
+* **Witnesses**: Signatures and other proofs needed to validate the transaction
+* **Cell Deps**: Dependencies on other cells required for verification logic
+
+**Note:** In CKB, capacity (CKBytes) serves a dual purpose: as the native token for transactions and as payment for data storage on the blockchain. Every byte of data stored requires at least 1 CKByte of capacity.
+
+## Setting Up Your Project
+
+Let's start by creating a simple project to build our transaction:
+
+```bash
+mkdir first-ckb-transaction
+cd first-ckb-transaction
+npm init -y
+npm install @ckb-lumos/lumos
+# For TypeScript projects, also install:
+npm install typescript ts-node @types/node --save-dev
+```
+
+For TypeScript projects, create a basic `tsconfig.json` file:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist"
+  }
+}
+```
+
+## Creating a Simple Transfer Transaction
+
+Let's create a new file called `transfer.js` (or `transfer.ts` for TypeScript):
+
+```javascript
+// transfer.js or transfer.ts
+const { Indexer, config, hd, commons, helpers } = require("@ckb-lumos/lumos");
+
+// Connect to the testnet
+// Use config.predefined.AGGRON4 for testnet
+const CONFIG = config.predefined.AGGRON4;
+const indexer = new Indexer(CONFIG.ckbUrl);
+
+async function transfer() {
+  // Make sure the indexer is running
+  indexer.startForever();
+
+  try {
+    // Replace with your own private key
+    const privateKey = "0xYOUR_PRIVATE_KEY_HERE";
+    const fromAddress = hd.key.privateKeyToAddress(privateKey, {
+      config: CONFIG,
+    });
+
+    // Replace with recipient address
+    const toAddress = "ckt1qyqvsv5240xeh85wvnau2eky8pwrhh4jr8ts8vyj37";
+
+    // Amount to send in shannons (1 CKB = 10^8 shannons)
+    const amount = BigInt(100_0000_0000); // 100 CKBytes
+
+    // Transaction fee (usually 0.001 CKB)
+    const txFee = BigInt(1000_0000); // 0.001 CKBytes in shannons
+
+    console.log(`Sending ${amount / BigInt(10**8)} CKB from ${fromAddress} to ${toAddress}`);
+
+    // Generate the transaction
+    const txSkeleton = helpers.TransactionSkeleton({ cellProvider: indexer });
+
+    // Add input capacity cells from the sender
+    const capacityRequired = amount + txFee;
+    const collectedCells = await commons.common.collectCapacity(
+      indexer,
+      fromAddress,
+      capacityRequired
+    );
+
+    if (collectedCells.capacity < capacityRequired) {
+      throw new Error(
+        `Not enough capacity, needed: ${capacityRequired}, got: ${collectedCells.capacity}`
+      );
+    }
+
+    // Add the cells to the transaction
+    const inputCells = collectedCells.cells;
+    let txSkeletonWithInputs = txSkeleton;
+    for (const cell of inputCells) {
+      txSkeletonWithInputs = txSkeletonWithInputs.update("inputs", (inputs) =>
+        inputs.push(cell)
+      );
+    }
+
+    // Create the output cell to the recipient
+    const outputCell = {
+      cell_output: {
+        capacity: "0x" + amount.toString(16),
+        lock: helpers.parseAddress(toAddress, { config: CONFIG }),
+      },
+      data: "0x",
+    };
+
+    // Add the output cell to the transaction
+    let txSkeletonWithOutput = txSkeletonWithInputs.update("outputs", (outputs) =>
+      outputs.push(outputCell)
+    );
+
+    // Create a change cell for remaining capacity
+    const inputCapacity = collectedCells.capacity;
+    const outputCapacity = amount;
+    const changeCapacity = inputCapacity - outputCapacity - txFee;
+
+    if (changeCapacity > 0) {
+      const changeCell = {
+        cell_output: {
+          capacity: "0x" + changeCapacity.toString(16),
+          lock: helpers.parseAddress(fromAddress, { config: CONFIG }),
+        },
+        data: "0x",
+      };
+
+      txSkeletonWithOutput = txSkeletonWithOutput.update("outputs", (outputs) =>
+        outputs.push(changeCell)
+      );
+    }
+
+    // Sign the transaction
+    let txToSign = commons.common.prepareSigningEntries(txSkeletonWithOutput);
+    const message = txToSign.get("signingEntries").get(0).message;
+    const signature = hd.key.signRecoverable(message, privateKey);
+
+    // Add the signature to the transaction
+    const signedTx = commons.common.setupInputCell(txToSign, 0, {
+      signedWitness: signature,
+    });
+
+    // Finalize and send the transaction
+    const finalTx = commons.common.createTransactionFromSkeleton(signedTx);
+
+    // Send the transaction to the network
+    const rpc = new helpers.RPC(CONFIG.ckbUrl);
+    const txHash = await rpc.send_transaction(finalTx);
+
+    console.log(`Transaction sent! Hash: ${txHash}`);
+    console.log(`View your transaction at: https://pudge.explorer.nervos.org/transaction/${txHash}`);
+
+    return txHash;
+
+  } catch (error) {
+    console.error("Error during transfer:", error);
+    throw error;
+  } finally {
+    // Stop the indexer when done
+    indexer.stop();
+  }
+}
+
+// Execute the transfer function
+transfer().then(console.log).catch(console.error);
+```
+
+### Understanding the Code
+
+Let's break down the key components of this transaction:
+
+1. **Setup**: We initialize our connection to the CKB testnet (Aggron).
+
+2. **Addresses and Keys**: We use a private key to derive a sender address, and specify a recipient address.
+
+3. **Capacity Collection**: We collect enough cells from the sender to cover both the transfer amount and transaction fee.
+
+4. **Transaction Building**:
+   - We create a transaction skeleton
+   - Add input cells (cells to be consumed)
+   - Create output cells (where capacity is being sent)
+   - Add a change cell for remaining capacity
+
+5. **Signing**: We sign the transaction with the sender's private key.
+
+6. **Submission**: We send the signed transaction to the network.
+
+## Running Your Transaction
+
+Before running the code, make sure to:
+
+1. Replace `"0xYOUR_PRIVATE_KEY_HERE"` with your actual private key (never share or expose this!)
+2. Make sure your address has some testnet CKBytes (use a faucet if needed)
+3. Update the recipient address to your desired destination
+
+Then run the code:
+
+```bash
+node transfer.js
+# Or for TypeScript:
+# npx ts-node transfer.ts
+```
+
+### Notes
+
+- **Security Warning**: Never include your private key directly in your code files in a real application. Use environment variables or secure key management solutions.
+- **Cell Collection**: The `collectCapacity` function might collect multiple cells if a single cell doesn't have enough capacity.
+- **Minimum Capacity**: Each output cell must have at least 61 CKBytes (6100000000 shannons) for a basic transfer.
+
+## Beyond Simple Transfers
+
+While the example above covers a simple capacity transfer, CKB transactions can do much more:
+
+1. **Data Storage**: You can store arbitrary data in the `data` field of cells.
+2. **Type Scripts**: You can attach logic to cells with type scripts.
+3. **Contract Deployment**: You can deploy smart contracts by creating cells with code.
+
+## Check Your Understanding
+
+Try to modify the example to send only 50 CKBytes instead of 100. What parts of the code need to be changed? How would you add a simple message in the transaction by including data in an output cell?
+
+## Resources
+
+- [Nervos CKB Transaction Structure Documentation](https://docs.nervos.org/docs/basics/concepts/tx-structure/)
+- [Lumos SDK GitHub Repository](https://github.com/ckb-js/lumos)
+- [CKB Testnet Faucet](https://faucet.nervos.org/)
+- [CKB Testnet Explorer](https://explorer.nervos.org/)
+- [Cell Model Documentation](https://docs.nervos.org/docs/basics/concepts/cell-model/)

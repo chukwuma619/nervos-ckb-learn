@@ -1,0 +1,230 @@
+---
+title: 'Working with CKB Addresses in JavaScript'
+orderIndex: '16'
+description: 'Learn how to generate, validate, and work with CKB addresses using the JavaScript SDK. Understand different address formats and their purposes in the Nervos ecosystem.'
+---
+# Working with CKB Addresses in JavaScript
+
+## Learning outcomes
+
+- Understand the structure and purpose of CKB addresses
+- Generate new CKB addresses using the Lumos SDK
+- Distinguish between different address formats (short, long, testnet, mainnet)
+- Convert between different address representations and formats
+- Validate CKB addresses and extract information from them
+- Implement best practices for address management in dApps
+
+## What is a CKB Address?
+
+A CKB address is a user-friendly representation of a lock script on the Nervos blockchain. Instead of working with complex, raw script data, addresses provide an encoded string format that's easier to share, display, and validate.
+
+```javascript
+// Example of a mainnet CKB address
+const mainnetAddress = "ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdtyq04tvp02wectaumxn0664yw2jd53c5azjdx";
+```
+
+**Note:** Behind each CKB address is a lock script that determines the conditions under which the associated cells can be spent.
+
+## Address Formats and Prefixes
+
+CKB addresses use different prefixes to indicate network and format:
+
+- **ckb1** - Mainnet addresses
+- **ckt1** - Testnet addresses
+
+CKB addresses also come in two formats:
+
+1. **Short format**: Uses the default secp256k1-blake160 lock script (most common)
+2. **Full (long) format**: Contains complete script information, allowing for custom lock scripts
+
+**Note:** Always verify which network you're working with. Sending CKB to the wrong network address could result in permanent loss of funds.
+
+## Setting Up with Lumos SDK
+
+Before working with addresses, set up your project with the Lumos SDK:
+
+```bash
+npm install @ckb-lumos/lumos
+```
+
+For TypeScript users, also install the types:
+
+```bash
+npm install @ckb-lumos/lumos typescript ts-node @types/node
+```
+
+## Generating a New Address
+
+To generate a new CKB address, you'll first need to create a private key, derive its public key, and then format it as a CKB address:
+
+```javascript
+const { key, helpers } = require("@ckb-lumos/lumos");
+
+// Generate a new private key
+const privateKey = key.generatePrivateKey();
+console.log("Private key:", privateKey);
+
+// Get the public key hash (blake160 of the public key)
+const publicKeyHash = key.publicKeyToBlake160(key.privateKeyToPublicKey(privateKey));
+
+// Generate testnet address from the public key hash
+const testnetAddress = helpers.generateAddress({
+  code_hash: "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+  hash_type: "type",
+  args: publicKeyHash,
+});
+console.log("Testnet address:", testnetAddress);
+```
+
+This code generates a secp256k1-blake160 address, which is the standard address type on CKB.
+
+### Notes
+
+- Always securely store private keys and never share them
+- The `code_hash` and `hash_type` above refer to the default SECP256K1-Blake160 lock script
+- For mainnet addresses, use `config.predefined.LINA.SCRIPTS` instead of the testnet configuration
+
+## Converting Between Address Formats
+
+You might need to convert between the string address format and the underlying lock script:
+
+```javascript
+const { helpers, Address } = require("@ckb-lumos/lumos");
+
+// Address to lock script
+const address = "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqgqnwu436ywg6pxya69aqs9neenrehlj34gnu";
+const lockScript = helpers.addressToScript(address);
+console.log("Lock script:", lockScript);
+
+// Lock script to address
+const newAddress = helpers.encodeToAddress(lockScript);
+console.log("Address:", newAddress);
+
+// Check if two addresses refer to the same lock script
+const isEqual = Address.sameScript(address1, address2);
+```
+
+## Validating Addresses
+
+Always validate user-provided addresses to prevent errors:
+
+```javascript
+const { helpers } = require("@ckb-lumos/lumos");
+
+function isValidCKBAddress(address) {
+  try {
+    // This will throw an error if the address is invalid
+    helpers.addressToScript(address);
+
+    // Check network prefix (optional)
+    const isMainnet = address.startsWith("ckb1");
+    const isTestnet = address.startsWith("ckt1");
+
+    return {
+      valid: true,
+      isMainnet,
+      isTestnet
+    };
+  } catch (error) {
+    return {
+      valid: false,
+      error: error.message
+    };
+  }
+}
+
+console.log(isValidCKBAddress("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqgqnwu436ywg6pxya69aqs9neenrehlj34gnu"));
+```
+
+## Working with Multiple Address Types
+
+CKB supports several lock scripts, each with its own address format:
+
+```javascript
+const { config, helpers } = require("@ckb-lumos/lumos");
+
+// Configure for testnet
+config.initializeConfig(config.predefined.AGGRON4);
+
+// Generate a Secp256k1 address (standard)
+const secp256k1Address = helpers.generateAddress({
+  code_hash: config.SCRIPTS.SECP256K1_BLAKE160.CODE_HASH,
+  hash_type: config.SCRIPTS.SECP256K1_BLAKE160.HASH_TYPE,
+  args: "0x36c329ed630d6ce750712a477543672adab57f4c" // Example public key hash
+});
+
+// Generate an ACP (Anyone-Can-Pay) address
+const acpAddress = helpers.generateAddress({
+  code_hash: config.SCRIPTS.ANYONE_CAN_PAY.CODE_HASH,
+  hash_type: config.SCRIPTS.ANYONE_CAN_PAY.HASH_TYPE,
+  args: "0x36c329ed630d6ce750712a477543672adab57f4c"
+});
+
+console.log("Standard address:", secp256k1Address);
+console.log("ACP address:", acpAddress);
+```
+
+### Notes
+
+- Different lock scripts enable different spending conditions
+- ACP (Anyone-Can-Pay) addresses allow partial cell consumption, useful for payment scenarios
+- Multisig addresses require multiple signatures to spend cells
+
+## Address Management in dApps
+
+When building dApps, consider these best practices:
+
+1. **Display short formats** for better UX but store full address data internally
+2. **Always validate** addresses before processing transactions
+3. **Show network type** (testnet/mainnet) to prevent cross-network transactions
+4. **Include address type** information when relevant for users
+5. **Provide copy functionality** with confirmation to prevent errors
+
+### Example: Address Display Component
+
+```javascript
+// React component example for displaying a CKB address
+function AddressDisplay({ address }) {
+  const { valid, isMainnet, isTestnet } = isValidCKBAddress(address);
+
+  if (!valid) {
+    return <div className="error">Invalid CKB address</div>;
+  }
+
+  // Truncate long addresses for display
+  const truncated = `${address.substring(0, 10)}...${address.substring(address.length - 8)}`;
+
+  // Determine network type for UI
+  const networkBadge = isMainnet ?
+    <span className="badge mainnet">Mainnet</span> :
+    <span className="badge testnet">Testnet</span>;
+
+  return (
+    <div className="address-container">
+      <span className="address">{truncated}</span>
+      {networkBadge}
+      <button onClick={() => {
+        navigator.clipboard.writeText(address);
+        alert("Address copied!");
+      }}>Copy</button>
+    </div>
+  );
+}
+```
+
+## Check your understanding
+
+Try implementing a function that extracts the network type (testnet/mainnet) and lock script type from a CKB address. Your function should:
+
+1. Accept a CKB address string
+2. Return an object with `network` (either "mainnet" or "testnet")
+3. Determine if it's a standard SECP256K1 address or another type
+4. Handle invalid addresses gracefully
+
+## Resources
+
+- [Nervos CKB Address Format RFC](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md) - The official specification for CKB addresses
+- [Lumos Address Module Documentation](https://nervosnetwork.github.io/lumos/) - Technical reference for address-related functions
+- [CKB Explorer](https://explorer.nervos.org/) - Useful for looking up and verifying addresses on mainnet
+- [CKB Testnet Explorer](https://explorer.nervos.org/aggron/) - For verifying testnet addresses
+- [Nervos Dev Tools](https://tools.nervos.org/) - Additional utilities for developers working with CKB
