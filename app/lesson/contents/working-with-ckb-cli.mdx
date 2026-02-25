@@ -1,0 +1,186 @@
+---
+title: 'Working with CKB-CLI'
+orderIndex: '10'
+description: 'Learn to use the command-line interface for CKB to interact with the blockchain. Practice creating addresses, checking balances, and executing basic operations on the CKB network.'
+---
+# Working with CKB-CLI: A Command-Line Interface for Nervos CKB
+
+## Learning outcomes
+
+- **Understand** what CKB-CLI is and its role in the Nervos ecosystem
+- **Install and configure** CKB-CLI in your development environment
+- **Generate** new CKB addresses and key pairs using CKB-CLI
+- **Check balances** of CKB addresses and understand the output format
+- **Transfer CKBytes** between addresses using command-line operations
+- **Execute** common blockchain operations through the CKB-CLI interface
+
+## What is CKB-CLI?
+
+CKB-CLI (Command Line Interface) is a versatile tool for interacting with the Nervos CKB blockchain. It allows developers to perform common operations such as creating accounts, checking balances, transferring tokens, and querying blockchain data—all through a simple command-line interface.
+
+Think of CKB-CLI as your direct connection to the Nervos blockchain, providing functions that would normally require a graphical wallet, but in a format that's scriptable and automation-friendly.
+
+### Why Use CKB-CLI?
+
+While there are graphical wallets available for CKB (such as Neuron, Portal Wallet, and CKBull), CKB-CLI offers several advantages for developers:
+
+1. **Script automation** of blockchain interactions
+2. **Direct access** to CKB's features without GUI overhead
+3. **Simplified testing** in development environments
+4. **Integration capabilities** with development workflows
+
+**Note:** CKB-CLI is primarily intended for development and testing purposes. For managing real assets on mainnet, consider using a secure wallet with proper key management.
+
+## Installing CKB-CLI
+
+CKB-CLI is available in two ways:
+1. As a standalone tool
+2. Bundled with the CKB Node software
+
+For most development purposes, using OffCKB CLI (which we covered in the previous lesson) is the simplest approach, as it includes a local devnet with CKB-CLI capabilities. However, if you need the standalone version, follow these steps:
+
+### Option 1: Using OffCKB (Recommended for Beginners)
+
+If you've already set up OffCKB from the previous lesson, you can access CKB-CLI functionality through it:
+
+```bash
+npx @offckb/cli accounts
+npx @offckb/cli balance
+```
+
+### Option 2: Direct Download (For Advanced Users)
+
+1. Download the latest release from the [CKB GitHub releases page](https://github.com/nervosnetwork/ckb/releases)
+2. Extract the files to a directory
+3. Add the directory to your PATH or navigate to it in your terminal
+4. Verify installation:
+
+```bash
+ckb-cli --version
+```
+
+## Basic CKB-CLI Operations
+
+Let's explore some of the most common operations you can perform with CKB-CLI.
+
+### Generating a New Account
+
+To create a new account (key pair and address):
+
+```bash
+ckb-cli account new
+```
+
+You'll be prompted to create a password to protect this account. After creation, you'll see output similar to:
+
+```
+Your new account is locked with a password. Please give a password. Do not forget this password.
+Password:
+Repeat password:
+address:
+  mainnet: ckb1qyq...
+  testnet: ckt1qyq...
+lock_arg: 0x...
+```
+
+**Note:** Make sure to save the address, lock_arg, and password in a secure place. The password is required for transactions, and the lock_arg is needed for mining configuration.
+
+### Checking Account Balances
+
+To check the balance of an address:
+
+```bash
+ckb-cli wallet get-capacity --address <address>
+```
+
+Replace `<address>` with your CKB address. The output will show:
+
+```
+immature: 0.0 (CKB)
+total: 1000.0 (CKB)
+```
+
+- **immature** refers to recently mined CKBytes that aren't yet spendable
+- **total** is the total balance including both mature and immature CKBytes
+
+### Understanding CKB Address Format
+
+CKB addresses have a specific format. The prefix indicates the network:
+- `ckb1` - Mainnet addresses
+- `ckt1` - Testnet addresses
+
+For example:
+`ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvqqc6nhrq0wj8832ttnlse68ht0enpmsc9astaf`
+
+This long string encodes the public key hash and other information needed to verify ownership using the private key.
+
+### Transferring CKBytes
+
+To transfer CKBytes from one address to another:
+
+```bash
+ckb-cli wallet transfer --from-account <your-address> --to-address <recipient-address> --capacity <amount> --max-tx-fee <fee>
+```
+
+Parameters:
+- `--from-account` - Your CKB address
+- `--to-address` - The recipient's CKB address
+- `--capacity` - Amount to send in CKBytes (e.g., 100)
+- `--max-tx-fee` - Maximum transaction fee you're willing to pay (e.g., 0.00001)
+
+Example:
+```bash
+ckb-cli wallet transfer --from-account ckt1qyqg6cnaankwgwvh0gaq49uptd3aawhl9p6qpg5cus --to-address ckt1qyq0g9p6nxf5cdy38fm35zech5f90jl5aueqnsxch5 --capacity 100 --max-tx-fee 0.00001
+```
+
+You'll be prompted for your password, and upon success, you'll see a transaction hash (something like `0x1b66aafaaba5ce34de494f60374ef78e8f536bb3af9cab4fa63c0f29374c3f89`).
+
+#### Notes on Capacity and Fees
+
+- **Capacity** in CKB-CLI is typically specified in CKBytes (1 CKByte = 10^8 shannon)
+- The minimum amount for a basic transfer is approximately 61 CKBytes (this covers the minimum cell capacity)
+- **Shannon** is the smallest unit of CKBytes (similar to satoshis in Bitcoin)
+
+## Working with OffCKB (Simplified Approach)
+
+If you're using OffCKB from our previous lesson, many operations are simplified. Here are the equivalent commands:
+
+### Check Account Balance
+
+```bash
+npx @offckb/cli balance
+```
+
+### Transfer CKBytes
+
+```bash
+npx @offckb/cli transfer <recipient-address> <amount-in-ckb>
+```
+
+Example:
+```bash
+npx @offckb/cli transfer ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvqqc6nhrq0wj8832ttnlse68ht0enpmsc9astaf 100
+```
+
+### List Available Accounts
+
+```bash
+npx @offckb/cli accounts
+```
+
+## Check Your Understanding
+
+Try this exercise: Using CKB-CLI (or OffCKB CLI), generate a new address, then transfer a small amount (e.g., 100 CKBytes) from one of your existing accounts to this new address. After that, check the balance of both addresses to confirm the transfer was successful.
+
+Ask yourself:
+- What does the transaction hash represent?
+- How long did the transaction take to confirm?
+- What happens to the change amount (the remaining balance) after the transaction?
+
+## Resources
+
+- [CKB-CLI GitHub Repository](https://github.com/nervosnetwork/ckb-cli) - Official source code and documentation
+- [CKB Documentation](https://docs.nervos.org) - Comprehensive documentation on Nervos CKB
+- [OffCKB CLI NPM Package](https://www.npmjs.com/package/@offckb/cli) - Simplified CLI for CKB development
+- [Nervos Developer Resources](https://github.com/ckb-ecofund/CKB-Developer-Resource) - Collection of tools and guides for CKB developers
+- [CKB JSON-RPC API Documentation](https://github.com/nervosnetwork/ckb/blob/develop/rpc/README.md) - Reference for the RPC calls that CKB-CLI uses under the hood

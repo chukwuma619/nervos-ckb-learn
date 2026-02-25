@@ -1,0 +1,178 @@
+---
+title: 'Cryptographic Fundamentals for Blockchain'
+orderIndex: '7'
+description: 'Build essential knowledge of cryptographic primitives used in blockchains, including hash functions, public-key cryptography, digital signatures, and address generation. See practical applications in the context of Nervos CKB.'
+---
+# Cryptographic Fundamentals for Blockchain
+
+## Learning outcomes
+
+By the end of this lesson, you will:
+- Understand what cryptographic hash functions are and why they're essential for blockchains
+- Explain how public-key cryptography enables secure transactions in a trustless environment
+- Describe how digital signatures verify ownership and authenticate transactions
+- Understand how blockchain addresses are generated from public keys
+- Recognize Nervos CKB's unique approach to cryptography with its crypto-agnostic VM
+
+## Introduction to Blockchain Cryptography
+
+Imagine you want to send money to a friend across the world without a bank. How would you prove it was really you who sent it? How would your friend know the transaction wasn't altered? And how would the entire network agree this transaction happened?
+
+Cryptography solves these problems. It's the foundation that makes blockchains possible, providing the security layer that enables trustless transactions between parties who don't know each other.
+
+## Cryptographic Hash Functions
+
+**Cryptographic hash functions** are algorithms that convert data of any size into a fixed-length string of characters. Think of them as digital fingerprints for data.
+
+Here's what makes hash functions special:
+
+1. They produce a fixed-length output regardless of input size
+2. The same input always produces the same output
+3. Even a tiny change to the input produces a completely different output
+4. It's practically impossible to reverse-engineer the original input from the output
+5. It's extremely unlikely that two different inputs will produce the same output (called a "collision")
+
+### Example of a Hash Function
+
+Let's see a simple example using SHA-256 (a common hash function used in blockchains):
+
+```
+Input: "Hello, blockchain"
+Output: 4bc7e276275d509da1cc61e885120e044a0bad64801d1cbeac438b9235f95d41
+
+Input: "Hello, blockchains" (added just one 's')
+Output: 82f68d62f5684e7095ea038aa18520ecad9ea7a3dacc4127e6278de9c3a6f35a
+```
+
+Notice how adding just one character completely changes the output!
+
+### Hash Function Uses in Blockchain
+
+Hash functions serve multiple critical roles in blockchain systems:
+- Creating unique block identifiers
+- Linking blocks together (each block contains the previous block's hash)
+- Generating transaction IDs
+- Creating addresses from public keys
+- Securing the mining/validation process
+- Verifying data integrity
+
+## Public-Key Cryptography
+
+**Public-key cryptography** (also called asymmetric cryptography) uses a pair of keys: a public key that can be shared with anyone, and a private key that must be kept secret.
+
+The magic of this system is that:
+1. Data encrypted with the public key can only be decrypted with the private key
+2. Data signed with the private key can be verified using the public key
+
+This creates the foundation for secure blockchain transactions without requiring trust between parties.
+
+### Private Keys and Security
+
+In blockchain, your private key is essentially your identity and access to your assets. It's usually a randomly generated number that should never be shared. For example, a typical private key might look like:
+
+```
+c4bbcb1fbec99d65bf59d85c8cb62ee2db963f0fe106f483d9afa73bd4e39a8a
+```
+
+Whoever has this key controls the associated assets—there is no "forgot password" option in decentralized systems. This is why the phrase "not your keys, not your coins" is so common in crypto.
+
+## Digital Signatures
+
+**Digital signatures** use private keys to create unique, verifiable signatures for specific messages or transactions. They provide three essential properties:
+
+1. **Authentication**: Proving who created the signature
+2. **Non-repudiation**: The signer cannot deny signing the message
+3. **Integrity**: The message wasn't altered after signing
+
+### How Digital Signatures Work in Blockchain
+
+When you create a transaction, your wallet:
+
+1. Takes the transaction data
+2. Creates a hash of this data
+3. Signs this hash with your private key to produce a signature
+4. Attaches this signature to the transaction before broadcasting it
+
+Anyone can then verify this signature using your public key, confirming you authorized the transaction without ever needing to know your private key.
+
+```
+Transaction data → Hash → Sign with private key → Digital signature
+```
+
+#### Notes
+
+The signature is unique to both the message and the signer. Even signing the exact same transaction twice would produce different signatures. This prevents "replay attacks" where someone could copy and resubmit your previous valid transactions.
+
+## Blockchain Addresses
+
+While you could use public keys directly, most blockchains use **addresses** derived from public keys. Addresses are:
+- Shorter and more user-friendly
+- Include checksum features to prevent typos
+- Add an extra layer of security (in some cases)
+
+The typical address generation process is:
+```
+Private key → Public key → Apply hash function(s) → Address
+```
+
+For example, a Bitcoin address looks like:
+```
+1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+```
+
+And a Nervos CKB address might look like:
+```
+ckb1qyqt705jmfy3r7jlvg88k87j0sksmhgduazq7x5l8k
+```
+
+## Nervos CKB's Crypto-Agnostic Approach
+
+Nervos CKB takes a unique approach to cryptography compared to other blockchains through its **crypto-agnostic virtual machine**.
+
+Most blockchains like Ethereum hardcode specific cryptographic algorithms into their protocol. In contrast, Nervos CKB:
+
+1. Implements a RISC-V standard compliant VM with no hardcoded cryptographic instructions
+2. Allows any cryptographic primitive to be deployed and used like a regular library
+3. Even implements its default hash function and signature verification as libraries
+
+### Benefits of CKB's Approach
+
+This architectural choice provides several advantages:
+
+1. **Future-proofing**: New cryptographic methods can be added without protocol upgrades
+2. **Quantum resistance**: When quantum computers threaten current cryptography, CKB can adopt quantum-resistant algorithms without a hard fork
+3. **Flexibility for developers**: You can choose the cryptographic algorithms that best suit your application needs
+4. **Interoperability**: Support for multiple cryptographic standards enables better cross-chain compatibility
+
+### CKB Cryptography in Practice
+
+When building on CKB, developers can use `ckb-crypto-service` to integrate cryptographic functions into their smart contracts. This provides a unified API for operations like:
+
+- Hashing with various algorithms
+- Secp256k1 signature verification (used by Bitcoin and many other chains)
+- Schnorr signature verification (for better privacy and efficiency)
+- Ed25519 signature verification (used by many modern cryptographic systems)
+
+A simple verification call might look like this:
+
+```
+{
+  "SchnorrVerify": {
+    "public_key": [2, 170, 187, ...],
+    "prehash": [1, 2, 3, ...],
+    "signature": [255, 1, 0, ...]
+  }
+}
+```
+
+## Check your understanding
+
+Consider this scenario: You want to send 100 CKBytes to a friend. Describe the cryptographic processes that would occur from the moment you initiate the transaction to when it's confirmed on the blockchain.
+
+## Resources
+
+- [Cryptography in the Bitcoin Protocol](https://developer.bitcoin.org/devguide/block_chain.html) - For a deeper understanding of how Bitcoin implements cryptographic principles
+- [Mastering Bitcoin](https://github.com/bitcoinbook/bitcoinbook) - Andreas Antonopoulos' comprehensive guide with excellent cryptography explanations
+- [Nervos CKB RFC](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md) - Technical specification with details about CKB's cryptographic approach
+- [Introduction to Modern Cryptography](https://www.cs.umd.edu/~jkatz/imc.html) - For those interested in the mathematical foundations
+- [CKB Crypto Service Documentation](https://github.com/nervosnetwork/ckb-production-scripts/tree/master/c/ckb-auth) - Resources for implementing cryptography in CKB smart contracts

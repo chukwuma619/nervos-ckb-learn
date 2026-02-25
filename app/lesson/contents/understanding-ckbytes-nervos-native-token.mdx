@@ -1,0 +1,154 @@
+---
+title: "Understanding CKBytes: Nervos' Native Token"
+orderIndex: '6'
+description: "Learn about CKBytes, the native token of Nervos CKB, its utility, economics, and how state storage is priced. Understand the concept of 'state rent' and how it addresses the state explosion problem."
+---
+# Understanding CKBytes: Nervos' Native Token
+
+## Learning outcomes
+
+- Explain the unique economic role of CKBytes as both a storage token and cryptocurrency
+- Describe how the "1 CKByte = 1 byte" storage model works in practice
+- Differentiate between Base Issuance and Secondary Issuance in Nervos' economic model
+- Understand how state rent is implemented through targeted inflation
+- Explain how the NervosDAO protects long-term holders from dilution effects
+- Identify the key advantages of Nervos' token economic model compared to other blockchain systems
+
+## What are CKBytes?
+
+CKBytes (CKB) are the native token of the Nervos Network. Unlike most cryptocurrencies that serve primarily as a medium of exchange or payment for computation, CKBytes have a unique dual purpose:
+
+1. **State storage resource**: Each CKByte represents 1 byte of storage space on the Nervos blockchain
+2. **Store of value**: Like Bitcoin, CKBytes are designed to maintain long-term value
+
+This design directly connects token ownership to blockchain resource usage, creating a fundamentally different economic model from other blockchains.
+
+```
+1 CKByte = 1 byte of storage on the Nervos blockchain
+```
+
+When you own CKBytes, you literally own a piece of the blockchain's state space that you can use to store assets, application data, or other types of common knowledge.
+
+### Notes
+
+The distinction between a utility token (used to pay for operations) and a storage token is crucial. While Ethereum uses gas to pay for computation and state changes, CKBytes represent actual ownership of blockchain state space.
+
+## The "Cell" Connection
+
+CKBytes enable Nervos' Cell model by providing the resource allocation mechanism. Remember that Cells are the fundamental storage units in Nervos (similar to Bitcoin's UTXOs but with enhanced programmability).
+
+To create a Cell, you must:
+1. Specify how much data you want to store
+2. Lock up an equivalent amount of CKBytes to pay for that storage
+
+For example, if you want to create a Cell containing 200 bytes of data, you need to lock at least 200 CKBytes in that Cell. This locked amount is called the Cell's **capacity**.
+
+```
+// Simplified Cell structure
+{
+  capacity: 200 CKBytes,    // Minimum required for 200 bytes of data
+  data: [200 bytes of data],
+  lock_script: [...],       // Defines ownership
+  type_script: [...]        // Defines state transition rules
+}
+```
+
+This direct relationship between tokens and storage creates natural resource constraints, encouraging developers to optimize their state usage.
+
+## CKByte Issuance Model
+
+Nervos implements a two-part token issuance strategy:
+
+### Base Issuance
+
+Base Issuance works similarly to Bitcoin's issuance:
+- Initial block rewards start at a fixed amount
+- Rewards halve approximately every 4 years
+- Eventually approaches zero, creating scarcity
+
+This creates a **hard cap** on Base Issuance, similar to Bitcoin's 21 million coin cap. The primary purpose of Base Issuance is to bootstrap the network's security by incentivizing miners in the early years.
+
+### Secondary Issuance
+
+Unlike Bitcoin, Nervos has an additional issuance mechanism called Secondary Issuance, which produces a fixed amount of new CKBytes each year (currently ~1.344 billion CKBytes annually). This Secondary Issuance serves multiple purposes:
+
+1. **State rent payment**: Compensating miners for long-term state storage
+2. **Security sustainability**: Providing miners with ongoing rewards even after Base Issuance diminishes
+3. **Addressing state bloat**: Creating an economic pressure against unnecessary state growth
+
+Secondary Issuance doesn't go entirely to miners - it's distributed according to how CKBytes are being used in the network:
+
+- **Portion for miners**: Based on percentage of CKBytes used for state storage
+- **Portion for NervosDAO deposits**: Based on percentage of CKBytes locked in the DAO
+- **Portion for treasury**: Based on percentage of CKBytes that are liquid (currently burned)
+
+## State Rent Through Targeted Inflation
+
+One of the most innovative aspects of Nervos' economic model is how it implements **state rent** - the ongoing cost of storing data on the blockchain.
+
+Rather than requiring users to make recurring payments to maintain their data (which would be impractical), Nervos implements state rent through a mechanism called **targeted inflation**.
+
+Here's how it works:
+
+1. When you store data on Nervos, you lock up CKBytes equal to the data size
+2. These locked CKBytes cannot be deposited in the NervosDAO
+3. Secondary Issuance creates new CKBytes, diluting the value of existing ones
+4. This dilution effectively acts as a "rent payment" from users occupying state
+
+This elegant solution means users don't need to actively make payments to maintain their data - the economic cost is automatically extracted through inflation targeting only those who are using state storage.
+
+### Notes
+
+This design aligns incentives between users and miners. Users pay for the ongoing burden their data places on the network, while miners receive compensation proportional to the amount of state they maintain.
+
+## The NervosDAO: An Inflation Shelter
+
+For long-term CKByte holders who aren't using their tokens for state storage, Nervos provides a mechanism to avoid the dilution effects of Secondary Issuance - the **NervosDAO**.
+
+The NervosDAO is a special built-in smart contract that:
+1. Allows users to lock their idle CKBytes
+2. Issues depositors a proportional share of Secondary Issuance
+3. Effectively neutralizes inflation for long-term holders
+
+```
+// Conceptual example of NervosDAO deposit
+function depositToNervosDAO(amount) {
+  // Lock CKBytes in the DAO
+  // Receive DAO deposit certificates
+  // Start earning Secondary Issuance rewards
+}
+```
+
+By depositing into the NervosDAO, long-term holders can treat CKBytes as a hard-capped asset similar to Bitcoin, while still allowing the network to implement state rent through Secondary Issuance.
+
+## Advantages of Nervos' Token Economics
+
+Nervos' token economic model offers several distinct advantages:
+
+1. **Sustainable security**: Unlike Bitcoin, which faces declining miner rewards over time, Nervos provides ongoing compensation through Secondary Issuance.
+
+2. **State growth control**: By making state storage a limited resource with an ongoing cost, Nervos creates economic pressure against state bloat.
+
+3. **Value alignment**: As the value of assets stored on Nervos increases, so does the value of CKBytes, naturally scaling security with network value.
+
+4. **Long-term holder protection**: The NervosDAO mechanism allows investors to hold CKBytes without inflation concerns.
+
+5. **First-class state ownership**: Users truly own their state space, creating stronger property rights than in account-based blockchains.
+
+## Check your understanding
+
+Consider a scenario where:
+- The current Secondary Issuance is 1.344 billion CKBytes annually
+- 50% of all CKBytes are used for state storage
+- 30% are deposited in the NervosDAO
+- 20% remain liquid
+
+How would the Secondary Issuance be distributed? Think about which portions go to miners, NervosDAO depositors, and the treasury (currently burned).
+
+## Resources
+
+- [Nervos CKB Positioning Paper](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md) - The authoritative source on Nervos' economic design
+- [Nervos Network Token Economics](https://medium.com/nervosnetwork/nervos-ckbyte-distribution-and-why-we-are-burning-25-in-the-genesis-block-9a7ddf7f6779) - Explains CKByte distribution and economics
+- [Understanding the NervosDAO](https://docs.nervos.org/docs/basics/guides/nervos-dao/) - Official guide to using and understanding the NervosDAO
+- [State Rent in Cryptoeconomic Systems](https://talk.nervos.org/t/state-rent-in-cryptoeconomic-systems/4574) - A deeper dive into the concept of state rent
+- [Neuron Wallet](https://github.com/nervosnetwork/neuron/releases) - The official desktop wallet for managing CKBytes and NervosDAO deposits

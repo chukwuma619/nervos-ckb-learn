@@ -1,0 +1,175 @@
+---
+title: 'Understanding Cryptocurrency Basics'
+orderIndex: '2'
+description: 'Explore the core concepts of cryptocurrencies, including wallets, transactions, mining, and the economics of digital assets. Learn the differences between coins and tokens, and how value is created and transferred in blockchain networks.'
+---
+# Understanding Cryptocurrency Basics
+
+## Learning outcomes
+
+By the end of this lesson, you will be able to:
+- Explain the difference between cryptocurrency coins and tokens
+- Describe how cryptocurrency wallets work and the types available
+- Understand the basics of cryptocurrency transactions and mining
+- Identify the core economic principles behind tokenomics
+- Recognize the security considerations for storing and managing digital assets
+
+## Coins vs. Tokens: Understanding the Fundamental Difference
+
+Cryptocurrencies come in two main forms: coins and tokens. While often used interchangeably, they serve distinct purposes in the blockchain ecosystem.
+
+**Coins** are digital currencies that operate on their own blockchain. Bitcoin (BTC), Ethereum (ETH), and Nervos CKB are examples of coins. They typically serve as a medium of exchange, store of value, or unit of account. Coins have their own independent ledger, consensus mechanism, and network rules.
+
+**Tokens** are digital assets created on top of existing blockchains. Unlike coins, tokens don't have their own blockchain but instead leverage the infrastructure of an existing one. For example, many tokens are built on Ethereum using standards like ERC-20 or ERC-721 (for NFTs).
+
+### Types of Tokens
+
+Tokens can serve various purposes:
+
+1. **Utility Tokens**: Provide access to a specific service or application within a blockchain ecosystem. For example, BNB on Binance can be used for reduced trading fees.
+
+2. **Security Tokens**: Represent ownership in an external asset (like equity in a company or real estate) and are often subject to securities regulations.
+
+3. **Governance Tokens**: Allow holders to vote on decisions affecting a protocol or platform, giving users direct influence over development.
+
+4. **Non-Fungible Tokens (NFTs)**: Represent unique digital or physical assets, with each token having distinct properties and values.
+
+#### Notes
+
+The distinction between coins and tokens isn't just technical—it has important implications for developers. When building a dApp, you'll need to decide whether to create your own blockchain (with its own coin) or build on an existing one (using tokens). For most developers, creating tokens on established blockchains like Ethereum or Nervos CKB is more practical than building an entirely new blockchain.
+
+## Understanding Cryptocurrency Wallets
+
+Cryptocurrency wallets are essential tools that allow you to interact with blockchain networks. Despite the name, wallets don't actually "store" your cryptocurrencies. Instead, they store the **private keys** that give you access to your assets on the blockchain.
+
+### How Wallets Work
+
+When you create a wallet, it generates a pair of cryptographic keys:
+- **Private key**: A secret code that gives you control over your funds
+- **Public key**: Derived from your private key, this creates your wallet address that others can send funds to
+
+Your cryptocurrency always exists on the blockchain—your wallet is just the tool that allows you to access and manage it.
+
+### Types of Wallets
+
+Wallets are generally categorized based on two criteria:
+
+**1. Control of Private Keys:**
+- **Custodial wallets**: A third party (like an exchange) controls your private keys
+- **Non-custodial wallets**: You have complete control over your private keys
+
+**2. Connection to the Internet:**
+- **Hot wallets**: Connected to the internet, providing convenience but with higher security risks
+  - *Mobile wallets*: Apps on smartphones
+  - *Web wallets*: Browser-based interfaces
+  - *Desktop wallets*: Software installed on computers
+
+- **Cold wallets**: Kept offline for maximum security
+  - *Hardware wallets*: Physical devices resembling USB drives (e.g., Ledger, Trezor)
+  - *Paper wallets*: Physical documents containing printed keys
+
+- **Warm wallets**: A hybrid approach with some online connectivity but requiring human intervention to authorize transactions
+
+#### Notes
+
+Many experienced cryptocurrency users employ a hybrid approach—keeping small amounts in hot wallets for convenience and daily transactions, while storing the majority of their holdings in cold wallets for security. This is similar to keeping some cash in your pocket and the rest in a bank account.
+
+## Cryptocurrency Transactions and Mining
+
+### How Transactions Work
+
+When you send cryptocurrency to someone, you're not actually "sending" anything in the traditional sense. Instead, you're creating a transaction record on the blockchain that transfers ownership of specific coins or tokens.
+
+A basic transaction involves:
+1. Specifying the recipient's address
+2. Determining the amount to send
+3. Signing the transaction with your private key
+4. Broadcasting the transaction to the network
+5. Waiting for miners/validators to confirm the transaction
+
+### Mining and Consensus
+
+For a transaction to be considered valid and permanent, it must be added to the blockchain through a process called **consensus**. The two most common consensus mechanisms are:
+
+1. **Proof of Work (PoW)**: Used by Bitcoin and Nervos CKB
+   - Miners compete to solve complex mathematical puzzles
+   - The first to solve gets to add a new block of transactions to the blockchain
+   - Requires significant computational power and energy consumption
+
+2. **Proof of Stake (PoS)**: Used by Ethereum and many other blockchains
+   - Validators are selected to create new blocks based on how many tokens they "stake" (lock up as collateral)
+   - Less energy-intensive than PoW
+   - Participants can lose staked tokens if they validate fraudulent transactions
+
+### Transaction Fees
+
+Most blockchain networks require fees for processing transactions. These fees:
+- Compensate miners/validators for their work
+- Prevent spam transactions that could overload the network
+- May vary based on network congestion
+
+## Tokenomics: The Economics of Cryptocurrencies
+
+**Tokenomics** refers to the economic design and principles governing a cryptocurrency. It's the combination of "token" and "economics" that determines how a digital asset functions within its ecosystem.
+
+### Key Components of Tokenomics
+
+1. **Supply Mechanisms**:
+   - **Maximum supply**: The total number of tokens that can ever exist (e.g., Bitcoin's 21 million cap)
+   - **Circulating supply**: The number of tokens currently available in the market
+   - **Token distribution**: How tokens are initially allocated (to founders, investors, community, etc.)
+
+2. **Token Utility**:
+   - What purpose does the token serve in the ecosystem?
+   - Does it grant access to features, voting rights, or financial rewards?
+   - Is it necessary for using the platform or just an investment vehicle?
+
+3. **Value Accrual Mechanisms**:
+   - **Burning**: Permanently removing tokens from circulation to create scarcity
+   - **Staking**: Locking up tokens to support network operations
+   - **Fee distribution**: Sharing transaction fees with token holders
+
+### Why Tokenomics Matters
+
+A well-designed tokenomics model creates a sustainable ecosystem where:
+- Users are incentivized to participate
+- The network remains secure
+- Token value has potential to appreciate based on utility and adoption
+
+Poor tokenomics design can lead to:
+- Excessive inflation devaluing the token
+- Lack of utility reducing demand
+- Unfair distribution causing centralization of wealth
+
+#### Check your understanding
+
+Think about Bitcoin and its 21 million maximum supply. How might this limited supply affect its value compared to cryptocurrencies with unlimited supply? What other factors beyond supply might influence a token's value?
+
+## Security Best Practices
+
+Securing your cryptocurrency is crucial since transactions are typically irreversible and there's no central authority to help recover lost funds.
+
+### Key Security Tips:
+
+1. **Never share your private keys or recovery phrases**
+2. **Use strong, unique passwords for exchange accounts**
+3. **Enable two-factor authentication (2FA) wherever possible**
+4. **Consider using hardware wallets for storing significant amounts**
+5. **Verify transaction details before confirming**
+6. **Be wary of phishing attempts and fake websites**
+7. **Keep your software and wallet applications updated**
+
+### Common Security Risks:
+
+- **Exchange hacks**: Centralized exchanges can be vulnerable to attacks
+- **Social engineering**: Scammers trying to trick you into revealing sensitive information
+- **Malware**: Software designed to steal private keys or redirect transactions
+- **Poor key management**: Losing access to your private keys or recovery phrase
+
+## Resources
+
+- [Bitcoin Whitepaper](https://bitcoin.org/bitcoin.pdf) - The original document by Satoshi Nakamoto that introduced Bitcoin
+- [Mastering Bitcoin](https://github.com/bitcoinbook/bitcoinbook) - A comprehensive guide to understanding Bitcoin technology
+- [Cryptoassets: The Innovative Investor's Guide](https://www.amazon.com/Cryptoassets-Innovative-Investors-Bitcoin-Beyond/dp/1260026671) - An overview of cryptocurrency investment fundamentals
+- [Ledger Academy](https://www.ledger.com/academy) - Educational resources on cryptocurrency security
+- [CoinMarketCap Learn](https://coinmarketcap.com/alexandria/) - Free educational content covering various cryptocurrency topics

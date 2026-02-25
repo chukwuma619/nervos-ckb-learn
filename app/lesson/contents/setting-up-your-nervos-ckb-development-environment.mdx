@@ -1,0 +1,178 @@
+---
+title: 'Setting Up Your Nervos CKB Development Environment'
+orderIndex: '9'
+description: 'Configure your development environment for Nervos CKB with the necessary tools and software. Install and set up Node.js, the CKB SDK, and other essential developer tools.'
+---
+# Setting Up Your Nervos CKB Development Environment
+
+## Learning outcomes
+
+By the end of this lesson, you will:
+- **Understand** the different options for setting up a Nervos CKB development environment
+- **Install** the necessary tools to start developing on Nervos
+- **Configure** a local CKB devnet for testing and development
+- **Connect** to the CKB network using JavaScript/TypeScript tools
+- **Validate** your setup to ensure everything is working correctly
+- **Know** the essential development workflow for CKB projects
+
+## Development Environment Options
+
+When developing for Nervos CKB, you have several options for your environment setup:
+
+1. **Local Development Chain** - Running your own local CKB node for development
+2. **Testnet** - Connecting to the public Nervos testnet
+3. **Mainnet** - Connecting to the production Nervos mainnet
+
+For beginners, a local development environment is highly recommended as it gives you complete control without worrying about testnet tokens or block intervals.
+
+## Installing Essential Tools
+
+### 1. OffCKB CLI Tool (Recommended Approach)
+
+The simplest way to get started is with OffCKB, an all-in-one tool that quickly sets up a local development environment with pre-configured settings.
+
+First, make sure you have Node.js installed (version 20.0.0 or higher):
+
+```bash
+# Check your Node.js version
+node --version
+```
+
+If you need to install or upgrade Node.js, visit the [official Node.js website](https://nodejs.org/).
+
+Next, install the OffCKB CLI tool:
+
+```bash
+npm install -g @offckb/cli
+```
+
+**Note:** For Windows users, you may need to run your terminal as Administrator for a global installation.
+
+### 2. Verify OffCKB Installation
+
+Check that OffCKB has been installed properly:
+
+```bash
+offckb --version
+```
+
+You should see the version number displayed, confirming successful installation.
+
+## Setting Up Your Local CKB Devnet
+
+### 1. Start the CKB Devnet
+
+The OffCKB tool makes it easy to start a local CKB blockchain node:
+
+```bash
+offckb node
+```
+
+When successful, you'll see output similar to:
+
+```
+Launching CKB devnet Node...
+CKB devnet RPC Proxy server running on http://localhost:28114
+```
+
+Your local blockchain is now running with:
+- A pre-configured CKB node
+- Pre-funded test accounts
+- Common scripts already deployed (like Omnilock)
+
+**Note:** To stop the node, press `Ctrl+C` in your terminal. When you want to restart, simply run `offckb node` again to continue where you left off.
+
+### 2. Clean Blockchain State (When Needed)
+
+If you need to start fresh with a clean blockchain, run:
+
+```bash
+offckb clean
+```
+
+This removes all existing blockchain data, allowing you to start from a fresh genesis block.
+
+## Setting Up JavaScript/TypeScript Development Environment
+
+Since you're interested in dApp development with JavaScript/TypeScript, let's set up the necessary tools:
+
+### 1. Create a Project Directory
+
+```bash
+mkdir my-ckb-project
+cd my-ckb-project
+npm init -y
+```
+
+### 2. Install the CKB SDK for JavaScript
+
+```bash
+npm install @nervosnetwork/ckb-sdk-core
+```
+
+### 3. Create a Simple Connection Test
+
+Create a file named `test-connection.js` with the following content:
+
+```javascript
+const CKB = require('@nervosnetwork/ckb-sdk-core').default;
+
+// Connect to your local devnet
+const nodeUrl = 'http://localhost:28114';
+const ckb = new CKB(nodeUrl);
+
+async function testConnection() {
+  try {
+    // Try to get blockchain information
+    const blockchainInfo = await ckb.rpc.getBlockchainInfo();
+    console.log('Successfully connected to CKB node!');
+    console.log('Blockchain info:', JSON.stringify(blockchainInfo, null, 2));
+  } catch (error) {
+    console.error('Failed to connect to CKB node:', error.message);
+  }
+}
+
+testConnection();
+```
+
+Run the test script to verify your connection:
+
+```bash
+node test-connection.js
+```
+
+If everything is set up correctly, you should see blockchain information displayed in your console.
+
+## Creating Your First CKB Contract Project
+
+OffCKB makes it easy to create a new contract project with all the necessary boilerplate:
+
+```bash
+offckb create my-first-contract -c hello-world
+```
+
+This creates a new project with:
+- A template contract in Rust
+- Build scripts configured
+- Test fixtures ready to go
+- Documentation in the README.md file
+
+Follow the instructions in the generated README.md to build, test, and deploy your contract.
+
+## Check Your Understanding
+
+Try connecting to your local CKB node using the JavaScript SDK. Can you modify the `test-connection.js` script to retrieve the following information?
+
+1. The current tip block number
+2. The number of transactions in the latest block
+
+**Hint:** Look for RPC methods like `getTipBlockNumber()` and `getBlock()` in the CKB SDK documentation.
+
+## Resources
+
+- [OffCKB Documentation](https://github.com/nervosnetwork/offckb) - Official documentation for the OffCKB CLI tool
+- [CKB JavaScript SDK](https://github.com/nervosnetwork/ckb-sdk-js) - GitHub repository for the JavaScript SDK
+- [Nervos Developer Docs](https://docs.nervos.org/) - Comprehensive documentation for Nervos developers
+- [Nervos Developer Training Course](https://learn.nervos.org/) - Structured learning path for new Nervos developers
+- [CKB Development FAQs](https://startwithnervos.com/faq) - Common questions and answers for CKB development
+- [Recommended Tech Stack](https://startwithnervos.com/faq) - Recommended technologies for different Nervos development scenarios

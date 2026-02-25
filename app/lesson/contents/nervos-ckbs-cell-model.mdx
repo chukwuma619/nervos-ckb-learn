@@ -1,0 +1,173 @@
+---
+title: "Nervos CKB's Cell Model"
+orderIndex: '5'
+description: "Dive into CKB's unique 'cell model' for data storage and understand how it differs from account-based models used in other blockchains. Learn how cells function as the basic unit of the CKB blockchain."
+---
+# Nervos CKB's Cell Model
+
+## Learning outcomes
+
+By the end of this lesson, you will:
+- Understand what the Cell model is and how it stores state on Nervos CKB
+- Identify the four key components of a Cell (capacity, lock script, type script, data)
+- Explain how Cell model extends Bitcoin's UTXO model with enhanced programmability
+- Differentiate between the Cell model and account-based models like Ethereum's
+- Understand the concept of "first-class assets" in CKB and its implications
+- Recognize how CKB separates computation (off-chain) from verification (on-chain)
+- Apply your knowledge to conceptualize basic state transitions using Cells
+
+## Introduction to the Cell Model
+
+Nervos CKB introduces a unique approach to blockchain state management called the Cell model. If you're familiar with Bitcoin's UTXO (Unspent Transaction Output) model, you can think of the Cell model as its highly programmable evolution—designed to combine the security and parallelizability of UTXO with the flexibility of Ethereum's account model.
+
+Let's start with something concrete: imagine a digital ledger where instead of recording account balances, you store individual "boxes" of value. Each box has specific rules about who can open it and how its contents can change. These boxes are Cells in Nervos CKB.
+
+## What is a Cell?
+
+A Cell is the fundamental unit of state storage in Nervos CKB. Unlike account entries that represent user balances, each Cell is an independent object that contains both data and the rules that govern it.
+
+Here's the basic structure of a Cell:
+
+```
+Cell: {
+  capacity: HexString;
+  lock: Script;
+  type: Script;
+  data: HexString;
+}
+```
+
+Let's break down each component:
+
+1. **capacity**: Defines the size limit of the Cell in shannon (1 CKB = 100,000,000 shannons). This represents how many bytes of data the Cell can hold, including all its fields.
+
+2. **lock**: A script that determines ownership of the Cell. Only someone who can satisfy the conditions in the lock script (typically by providing a valid signature) can use this Cell as an input in a transaction.
+
+3. **type**: An optional script that defines the rules for state transitions. It validates both when a Cell is created and when it's consumed, ensuring state changes follow predefined rules.
+
+4. **data**: The actual state data stored in the Cell. This can be anything from token balances to smart contract code, with no enforced internal structure.
+
+## Cells are Immutable
+
+One critical characteristic of Cells is that they are immutable. Once a Cell is created on-chain, its contents cannot be modified. Instead, to "update" a Cell:
+
+1. The original Cell is consumed (destroyed) as an input in a transaction
+2. A new Cell is created with the updated data as an output of the same transaction
+
+This immutability design mirrors Bitcoin's UTXO model, bringing several advantages:
+- Deterministic transaction verification
+- Inherent support for parallel transaction processing
+- Clear ownership boundaries
+- Simplified state management
+
+## Cell Model vs. Account Model
+
+To understand how revolutionary the Cell model is, let's compare it with Ethereum's account model:
+
+| Feature | Cell Model (Nervos) | Account Model (Ethereum) |
+|---------|---------------------|--------------------------|
+| State Storage | Discrete units (Cells) | Global state trie |
+| State Updates | Destroy and create Cells | Modify account state |
+| Ownership | Direct (lock script) | Indirect (contract custody) |
+| Parallelization | High (independent Cells) | Limited (account dependencies) |
+| User Data Storage | Direct in Cell data | Through contract storage |
+| Asset Representation | Native to the model | Contract implementation |
+
+### Notes
+
+The account model in Ethereum makes it easy to understand user balances, but it creates centralization points where all user assets are controlled by contract code. In the Cell model, users directly control their assets through the Cell's lock script, giving them true ownership.
+
+## First-Class Assets
+
+A unique property of the Cell model is how it enables **first-class assets**. In Ethereum, tokens are entries in a contract's storage, requiring the contract code to mediate all interactions. In Nervos CKB, any asset can be a "first-class citizen" on the blockchain:
+
+- Assets exist directly as Cells
+- Ownership is enforced directly by lock scripts
+- Rules for asset behavior are defined by type scripts
+- Users interact with assets directly, without intermediary contracts
+
+This means that even custom tokens created on Nervos have the same fundamental properties and security guarantees as the native CKB token.
+
+## The Computation-Verification Separation
+
+Nervos CKB introduces a distinctive approach to processing transactions:
+
+1. **State generation (off-chain)**: Users create new states and package them into transactions.
+2. **State verification (on-chain)**: The CKB Virtual Machine verifies these states by executing lock and type scripts.
+3. **State storage (Cell model)**: Verified states are stored in Cells on the blockchain.
+
+This separation creates an efficient division of responsibilities:
+- Computation-heavy tasks happen off-chain, preserving blockchain resources
+- Only verification happens on-chain, ensuring security and consensus
+- The Cell model provides a flexible foundation for storing the resulting states
+
+## Example: Token Transfer in the Cell Model
+
+Let's see how a token transfer works with the Cell model:
+
+Suppose Alice wants to send 100 SatoshiCoin tokens to Bob:
+
+1. Alice finds her Cell that contains her tokens (with her lock script and the SatoshiCoin type script)
+2. She creates a transaction that:
+   - Consumes her Cell as an input
+   - Creates a new Cell with Bob's lock script, the same SatoshiCoin type script, and data showing 100 tokens
+   - If Alice had more than 100 tokens, she creates another output Cell for herself with the remaining balance
+
+```
+Transaction {
+  Inputs: [
+    Cell {
+      capacity: 200 CKBytes,
+      lock: AliceLockScript,
+      type: SatoshiCoinTypeScript,
+      data: "150 tokens" // Alice has 150 tokens initially
+    }
+  ],
+  Outputs: [
+    Cell {
+      capacity: 100 CKBytes,
+      lock: BobLockScript,
+      type: SatoshiCoinTypeScript,
+      data: "100 tokens" // Bob receives 100 tokens
+    },
+    Cell {
+      capacity: 100 CKBytes,
+      lock: AliceLockScript,
+      type: SatoshiCoinTypeScript,
+      data: "50 tokens" // Alice keeps 50 tokens as change
+    }
+  ]
+}
+```
+
+The CKB-VM executes both the lock script (to verify Alice can spend her Cell) and the type script (to verify the token transfer follows SatoshiCoin rules).
+
+### Check your understanding
+
+Consider this scenario: You want to implement a voting system on Nervos CKB where each user has voting rights represented as tokens. How would you structure the Cells to represent:
+1. A user's voting rights
+2. The current vote tally
+
+Think about which fields of the Cell would store what information, and how votes would be cast through transactions.
+
+## Advantages of the Cell Model
+
+The Cell model offers several compelling benefits:
+
+1. **Enhanced security**: Assets are directly controlled by users through lock scripts rather than being held in contracts.
+
+2. **Parallelization**: Since Cells are independent, transactions affecting different Cells can be processed in parallel, improving scalability.
+
+3. **Flexible programmability**: The combination of lock scripts and type scripts allows for complex programmable logic while maintaining the UTXO model's advantages.
+
+4. **True ownership**: Users directly control their assets without intermediary contracts.
+
+5. **Natural sharding**: The discrete nature of Cells makes the model amenable to sharding for additional scalability.
+
+## Resources
+
+- [Nervos CKB RFC: Cell Model Specification](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md) - The official specification of the Cell model
+- [Cell Model Article by Nervos](https://medium.com/nervosnetwork/https-medium-com-nervosnetwork-cell-model-7323fca57571) - An in-depth explanation of the Cell model concepts
+- [CKB Documentation: Cell Structure](https://docs.nervos.org/docs/tech-explanation/cell) - Technical documentation on Cell implementation
+- [CKB vs. UTXO vs. Account Model](https://medium.com/nervosnetwork/my-comparison-between-the-utxo-and-account-model-821eb46691b2) - Comparative analysis of different blockchain state models
+- [First-Class Assets in CKB](https://blog.cryptape.com/how-ckb-turns-user-defined-cryptos-into-first-class-assets) - Detailed explanation of the first-class asset concept in CKB

@@ -1,0 +1,148 @@
+---
+title: 'The Nervos Network Architecture'
+orderIndex: '4'
+description: 'Explore the multi-layer architecture of Nervos Network, understanding the relationship between Layer 1 (CKB blockchain) and Layer 2 solutions. Learn how this architecture addresses blockchain scalability and security challenges.'
+---
+# The Nervos Network Architecture
+
+## Learning outcomes
+
+By the end of this lesson, you will:
+- Understand Nervos' multi-layered architecture and how it addresses blockchain scaling challenges
+- Identify the distinct roles of Layer 1 (CKB) and Layer 2 in the Nervos ecosystem
+- Explain how Nervos' architecture enables scalability without sacrificing security or decentralization
+- Recognize the benefits of the modular approach compared to monolithic blockchain designs
+- Understand how different Layer 2 solutions function within the Nervos ecosystem
+- Identify real-world use cases enabled by Nervos' architecture
+
+## The Blockchain Scaling Challenge
+
+Imagine trying to build a global payment system that must process thousands of transactions per second while ensuring every transaction is verified by thousands of computers around the world. This illustrates the fundamental challenge in blockchain design: how do you scale a system to handle high transaction volumes while maintaining security and decentralization?
+
+This challenge is often called the **blockchain trilemma** - the seemingly impossible task of optimizing for security, decentralization, and scalability simultaneously. Traditional blockchains like Bitcoin prioritize security and decentralization at the cost of scalability, while others may sacrifice some decentralization to achieve higher throughput.
+
+Nervos takes a different approach by separating concerns across multiple layers.
+
+## The Nervos Multi-Layered Architecture
+
+Nervos Network employs a layered architecture that clearly separates responsibilities:
+
+```
+Layer 2 (Generation Layer) - High performance, specialized processing
+              ↓
+Layer 1 (CKB) - Security, consensus, and state verification
+```
+
+### Layer 1: The Common Knowledge Base (CKB)
+
+The Common Knowledge Base (CKB) is Nervos' Layer 1 protocol - a permissionless, public blockchain that serves as the trust foundation for the entire ecosystem. CKB is responsible for:
+
+1. **State storage** - Securely storing all assets and data
+2. **Consensus** - Using Proof of Work to ensure decentralization and security
+3. **Verification** - Validating the rules for state transitions
+4. **Trust anchor** - Providing a security foundation for Layer 2 solutions
+
+Think of CKB as the secure vault of the system - it's not optimized for processing high volumes of transactions, but rather for maximum security and decentralization of critical data.
+
+#### Notes
+
+CKB uses a unique cell model (an extension of Bitcoin's UTXO model) that we'll explore in future lessons. This model is designed specifically to support verification of Layer 2 operations, making it fundamentally different from account-based blockchains like Ethereum.
+
+### Layer 2: The Generation Layer
+
+Layer 2 refers to a collection of off-chain protocols built on top of CKB that handle the high-performance transaction processing and computation. These include:
+
+1. **Axon sidechains** - Custom, high-throughput blockchains that periodically anchor back to CKB
+2. **Godwoken** - An Optimistic Rollup solution providing EVM compatibility
+3. **State channels** - Direct payment channels between parties (in development)
+
+Layer 2 solutions handle the bulk of transactions and computations, then periodically commit their results to CKB for final settlement and security.
+
+```
++------------------------------+
+|                              |
+|   dApps, User Applications   |
+|                              |
++------------------------------+
+             ↓  ↑
++------------------------------+
+|                              |
+|   Layer 2 Solutions          |
+|   (Godwoken, Axon, etc.)     |
+|                              |
++------------------------------+
+             ↓  ↑
++------------------------------+
+|                              |
+|   CKB Layer 1                |
+|   (Common Knowledge Base)    |
+|                              |
++------------------------------+
+```
+
+## How the Layers Work Together
+
+Let's use a practical example to illustrate how these layers interact:
+
+Imagine Alice wants to send 100 CKB tokens to Bob through a Layer 2 solution:
+
+1. Alice initiates the transaction on Layer 2
+2. The Layer 2 protocol processes the transaction quickly with low fees
+3. The Layer 2 protocol batches this with many other transactions
+4. Periodically, the batch of transactions is submitted to CKB (Layer 1)
+5. CKB verifies the validity of all transactions in the batch
+6. Once verified, the state changes are permanently recorded on CKB
+
+This process allows for thousands of transactions to be processed while only requiring a single settlement on the base layer, dramatically increasing overall throughput.
+
+## Benefits of the Layered Approach
+
+Nervos' architecture offers several key advantages:
+
+1. **Scalability** - Layer 2 solutions can process thousands of transactions per second while Layer 1 maintains security
+2. **Flexibility** - Different Layer 2 solutions can be optimized for specific use cases
+3. **Security** - Critical assets and state remain secured by the robust Layer 1
+4. **Decentralization** - The base layer can maintain high decentralization standards
+5. **Interoperability** - The architecture enables cross-chain communication through bridges
+
+### Check your understanding
+
+Consider this scenario: A gaming platform wants to build on Nervos with thousands of microtransactions per second, but also needs security for high-value assets. Which approach would be most suitable?
+
+*Answer: The gaming platform could use a Layer 2 solution like Axon for high-volume gameplay transactions, while storing valuable in-game assets directly on CKB Layer 1 for maximum security.*
+
+## Layer 2 Solutions in Detail
+
+### Axon
+
+**Axon** is Nervos' sidechain solution that enables developers to launch high-throughput blockchains that connect back to CKB. Key characteristics:
+
+- Custom consensus mechanisms can be implemented
+- Optimized for specific application needs
+- Secured through periodic checkpoints to CKB
+
+### Godwoken
+
+**Godwoken** is an Optimistic Rollup solution providing EVM compatibility, allowing Ethereum developers to port their applications to Nervos with minimal changes. It works by:
+
+1. Processing transactions off-chain
+2. Bundling many transactions together
+3. Submitting transaction data and state roots to CKB
+4. Providing a fraud-proof period where invalid transactions can be challenged
+
+## Real-World Applications
+
+The layered architecture of Nervos enables diverse applications:
+
+1. **DeFi platforms** can handle high-volume trading on Layer 2 while securing assets on Layer 1
+2. **NFT marketplaces** can process listings and bids on Layer 2 while storing the actual NFTs on Layer 1
+3. **Gaming applications** can process in-game actions on Layer 2 while storing valuable game assets on Layer 1
+4. **Enterprise solutions** can use private Layer 2 networks while anchoring critical data to the public Layer 1
+
+## Resources
+
+- [Nervos Network Documentation](https://docs.nervos.org) - Official documentation covering CKB and Layer 2 solutions in depth
+- [The Nervos RFC (Request for Comments)](https://github.com/nervosnetwork/rfcs) - Technical specifications of the Nervos protocols
+- [Understanding Blockchain Layering](https://www.nervos.org/knowledge-base/layer_1_vs_layer_2) - Nervos' explanation of the different blockchain layers
+- [Godwoken Documentation](https://www.godwoken.com/docs) - Technical resources for Nervos' Optimistic Rollup solution
+- [Axon Framework Overview](https://github.com/nervosnetwork/axon) - Technical details on Nervos' sidechain framework

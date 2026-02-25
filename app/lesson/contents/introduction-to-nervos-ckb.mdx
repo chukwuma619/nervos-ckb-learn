@@ -1,0 +1,119 @@
+---
+title: 'Introduction to Nervos CKB'
+orderIndex: '3'
+description: 'Get acquainted with Nervos CKB (Common Knowledge Base), its vision, goals, and how it fits into the blockchain ecosystem. Learn about its unique approach to blockchain architecture and its potential applications.'
+---
+# Introduction to Nervos CKB
+
+## Learning outcomes
+
+By the end of this lesson, you will:
+- Understand what Nervos CKB is and its role in the blockchain ecosystem
+- Identify the key components of Nervos' layered architecture
+- Explain how CKB's approach differs from traditional monolithic blockchains
+- Describe the function of the CKB token and its relationship to state storage
+- Recognize the main value propositions of the Nervos Network
+- Understand how Nervos achieves interoperability with other blockchains
+
+## What is Nervos CKB?
+
+Nervos CKB (Common Knowledge Base) is an open-source public blockchain platform founded in 2018. Unlike many blockchain platforms that try to do everything on a single layer, Nervos takes a different approach with its layered architecture.
+
+At its core, Nervos CKB is a Layer 1 blockchain that serves as a secure foundation for storing and verifying states (data) in the network. Think of CKB as a secure vault that stores valuable information that everyone in the network agrees on—what Nervos calls "common knowledge."
+
+```
+Layer 2 (Computation/Generation Layer)
+↓ Submit states ↑ Scale and process
+Layer 1 (CKB - Common Knowledge Base)
+```
+
+### Notes
+
+The term "common knowledge" refers to information that is verified by global consensus—essentially data that the entire network agrees is true. Cryptocurrencies are a prime example of common knowledge, as everyone agrees on who owns what.
+
+## Nervos' Layered Architecture
+
+Nervos employs a modular architecture that separates different blockchain functions across multiple layers:
+
+1. **Layer 1 (CKB)**: The foundation layer that focuses on security, decentralization, and state verification. CKB uses a Proof-of-Work consensus mechanism similar to Bitcoin, providing robust security.
+
+2. **Layer 2**: A collection of off-chain scaling solutions that handle computation and transaction processing. This is where most applications run and where transactions are generated before being settled on Layer 1.
+
+This layered approach solves the "blockchain trilemma"—the challenge of achieving security, decentralization, and scalability simultaneously. By delegating different responsibilities to separate layers, each layer can be optimized for its specific purpose.
+
+## The CKB Cell Model
+
+Nervos introduces a unique data structure called a **cell**, which is the primary state storage unit on the blockchain. Cells are similar to Bitcoin's UTXO (Unspent Transaction Output) model but with added programmability.
+
+Each cell contains:
+- Data (the state being stored)
+- Type script (defines the rules for state transitions)
+- Lock script (determines who can use the cell)
+
+When users want to update state, they:
+1. Create a transaction that references existing cells as inputs
+2. Generate new cells as outputs with updated states
+3. Include verification proofs that satisfy the scripts
+
+The CKB Virtual Machine (CKB-VM) verifies these transactions by executing the scripts to ensure they follow the rules.
+
+### Notes
+
+This model creates a clear separation between state generation (which happens off-chain or on Layer 2) and state verification (which happens on CKB). This separation is a key architectural difference from platforms like Ethereum, where both computation and verification happen on-chain.
+
+## The CKB Token Economy
+
+The native token of Nervos is also called CKB (Common Knowledge Byte). Unlike many cryptocurrencies that simply represent value, CKB tokens have a unique purpose:
+
+Each CKB token represents the right to occupy one byte of space on the blockchain.
+
+For example, if you own 1,000 CKB tokens, you can store up to 1,000 bytes of data on the CKB blockchain. This creates a direct correlation between the token's value and the demand for state storage.
+
+```
+1,000 CKB tokens = Right to store 1,000 bytes on the blockchain
+```
+
+This economic model addresses a critical issue in other blockchains: the "state explosion problem." As more applications are built and more data is stored, blockchain size grows indefinitely. By making state storage a scarce resource with a cost, Nervos incentivizes efficient use of space and creates long-term economic sustainability.
+
+## Interoperability and Flexibility
+
+One of Nervos' core design goals is to achieve seamless interoperability with other blockchain systems. This is achieved through:
+
+1. **Force Bridge**: A cross-chain solution that enables asset transfers between Nervos and other blockchains like Ethereum and Bitcoin.
+
+2. **Universal programmability**: The CKB-VM is based on the RISC-V instruction set, allowing it to support all cryptographic primitives and programming languages with the right compiler.
+
+This flexibility means developers can build applications that interact with multiple blockchain ecosystems, positioning Nervos as a hub for cross-chain interaction.
+
+## Modular vs. Monolithic Blockchains
+
+To understand why Nervos' architecture matters, let's compare it to traditional blockchain designs:
+
+**Monolithic blockchains** (like Bitcoin or Ethereum 1.0):
+- Execute transactions, reach consensus, and store data all on a single layer
+- Face inevitable trade-offs between security, decentralization, and scalability
+- Often struggle with scaling as network usage increases
+
+**Modular blockchains** (like Nervos):
+- Separate functions across specialized layers
+- Optimize each layer for its specific purpose
+- Scale more effectively without compromising security
+
+Nervos recognized early that true global adoption would require this modular approach, designing its system from the ground up to separate concerns across layers.
+
+## Check your understanding
+
+Consider this scenario: You want to build a decentralized application that needs to store 10 kilobytes of data on Nervos CKB. How many CKB tokens would you need to hold to occupy this space?
+
+<details>
+<summary>Click for answer</summary>
+You would need at least 10,000 CKB tokens, as each token represents the right to store 1 byte on the blockchain, and 10 kilobytes = 10,000 bytes.
+</details>
+
+## Resources
+
+- [Nervos Network Official Website](https://www.nervos.org) - The primary source for Nervos updates, documentation, and community resources
+- [Nervos RFCs](https://github.com/nervosnetwork/rfcs) - Technical specifications and proposals for the Nervos Network, including detailed explanations of core concepts
+- [CKB Development Blog](https://medium.com/nervosnetwork) - Articles covering technical deep-dives and development updates
+- [Nervos Talk Forum](https://talk.nervos.org) - Community discussions and support for developers and users
+- [CKB Explorer](https://explorer.nervos.org) - Tool for exploring the CKB blockchain, viewing transactions and block information

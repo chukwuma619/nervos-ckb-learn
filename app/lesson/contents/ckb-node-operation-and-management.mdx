@@ -1,0 +1,246 @@
+---
+title: 'CKB Node Operation and Management'
+orderIndex: '11'
+description: 'Set up and run a CKB node, understand the different node types (mainnet, testnet, devnet), and learn how to synchronize with the blockchain. Configure node parameters and monitor node performance.'
+---
+# CKB Node Operation and Management
+
+## Learning outcomes
+
+By the end of this lesson, you will be able to:
+- Understand the different types of CKB nodes (devnet, testnet, and mainnet) and their purposes
+- Set up a local CKB node for development using OffCKB
+- Install and configure standalone CKB nodes for testnet or mainnet
+- Verify node synchronization and monitor node status
+- Execute basic operations using the CKB command-line interface
+- Troubleshoot common node setup and synchronization issues
+
+## Understanding CKB Nodes and Their Types
+
+A CKB node is software that connects to the Nervos Network, validating transactions and blocks while maintaining a copy of the blockchain. Running your own node gives you direct access to the blockchain without relying on third-party services.
+
+### Node Types
+
+CKB offers three environments for development and deployment:
+
+1. **Devnet** (Development Network): A local, isolated blockchain environment for development and testing. Devnets start with a clean state, mine blocks instantly, and can be reset as needed.
+
+2. **Testnet** (Aggron): A public network that mimics the mainnet but uses test tokens with no real value. The testnet is for testing applications before deploying to mainnet.
+
+3. **Mainnet**: The primary Nervos blockchain where real CKBytes with monetary value are used.
+
+#### Notes
+
+The testnet is named "Aggron" and uses addresses with the prefix `ckt1`, while mainnet addresses start with `ckb1`. This makes it easy to distinguish between test and production environments.
+
+## Setting Up a Local Development Node with OffCKB
+
+The simplest way to run a local CKB node for development is using OffCKB, a command-line tool that streamlines CKB development.
+
+### Prerequisites
+
+- Node.js (v20 or later)
+
+### Installation Steps
+
+1. Install OffCKB globally:
+
+```bash
+npm install -g @offckb/cli
+```
+
+2. Verify the installation:
+
+```bash
+offckb --version
+```
+
+3. Start a local development node:
+
+```bash
+offckb node
+```
+
+This command starts a local CKB devnet with pre-configured settings, including pre-funded accounts. You'll see log output as blocks are produced.
+
+#### Notes
+
+The local devnet created by OffCKB includes several test accounts with funds, deployed common scripts, and immediate block production. This makes it perfect for quick development and testing without waiting for synchronization.
+
+## Installing a Standalone CKB Node
+
+For testnet or mainnet deployments, you may want to install the standalone CKB software.
+
+### Step 1: Download and Install CKB
+
+For Linux:
+
+```bash
+curl -LO https://github.com/nervosnetwork/ckb/releases/download/v0.115.0/ckb_v0.115.0_x86_64-unknown-linux-gnu.tar.gz
+tar xzf ckb_v0.115.0_x86_64-unknown-linux-gnu.tar.gz
+cd ckb_v0.115.0_x86_64-unknown-linux-gnu
+```
+
+For macOS:
+
+```bash
+curl -LO https://github.com/nervosnetwork/ckb/releases/download/v0.115.0/ckb_v0.115.0_x86_64-apple-darwin.zip
+unzip ckb_v0.115.0_x86_64-apple-darwin.zip
+cd ckb_v0.115.0_x86_64-apple-darwin
+```
+
+### Step 2: Verify Installation
+
+```bash
+./ckb --version
+```
+
+You should see output indicating the installed version.
+
+### Step 3: Initialize the Node
+
+For testnet:
+
+```bash
+./ckb init --chain testnet
+```
+
+For mainnet:
+
+```bash
+./ckb init --chain mainnet
+```
+
+This creates a default configuration and data folders for your node.
+
+### Step 4: Start the Node
+
+```bash
+./ckb run
+```
+
+Your node will now start synchronizing with the selected network.
+
+#### Notes
+
+The first synchronization can take several hours or even days for mainnet, as it downloads the entire blockchain history. For testnet, you can use a bootstrap snapshot from services like CKB.tools to speed up the initial synchronization.
+
+## Monitoring Node Synchronization
+
+After starting your CKB node, it's important to monitor its synchronization progress.
+
+### Checking Sync Progress
+
+The node's logs show information about synchronization progress. Look for lines that contain block height information:
+
+```
+2026-02-10 14:55:32.345 +00:00 INFO ckb-network Sync process [76543/982104]
+```
+
+This indicates that your node has synchronized up to block 76,543 out of 982,104 total blocks.
+
+### Using CKB-CLI to Check Status
+
+The CKB command-line interface provides tools to check node status:
+
+```bash
+./ckb-cli rpc get_tip_header
+```
+
+This returns information about the latest block your node knows about, including:
+
+```json
+{
+  "compact_target": "0x1a2d3011",
+  "dao": "0x45d5612c51717f9654d23c3e1f723e979c18294166ea1ebcf25e9b6e7d160db6",
+  "epoch": "0x7080291000029",
+  "hash": "0xa5b35e38a2f7fc47d3a13c62f96d5fa9f5cef89d7b3c1c7e3ddd28ed32b4b12b",
+  "nonce": "0x7890e9fbe9ac4bf10674ef5a85fd261a8f07c31851b13c6b93f185cef7662611",
+  "number": "0x1234a9",
+  "parent_hash": "0x1b5ffc7e24c282185926311d1c2d87ab3b37bfe294dcd0ff249b1e6a6b174c9d",
+  "proposals_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "timestamp": "0x18d18bcd92b",
+  "transactions_root": "0x1c4bde47e96d3b37b230db1d6af49bc00b6b3be55dae677b54b3e345d6fa8dbf",
+  "version": "0x0"
+}
+```
+
+The `"number"` field shows the current block height in hexadecimal.
+
+### Using RPC API
+
+For programmatic access to node status, you can query the JSON-RPC API directly:
+
+```bash
+curl http://127.0.0.1:8114 -X POST -H "Content-Type: application/json" -d '{"id": 1, "jsonrpc": "2.0", "method": "get_tip_header", "params": []}'
+```
+
+## Node Configuration
+
+CKB nodes are configured through configuration files located in the node's directory. The main files are:
+
+- `ckb.toml`: Main configuration file
+- `specs/testnet.toml` or `specs/mainnet.toml`: Chain specification
+
+### Common Configuration Settings
+
+To modify node behavior, edit `ckb.toml`:
+
+```toml
+[rpc]
+# Configure RPC service
+listen_address = "127.0.0.1:8114"
+
+[network]
+# Configure peer-to-peer network
+listen_addresses = ["/ip4/0.0.0.0/tcp/8115"]
+# Add initial network peers
+bootnodes = [
+  "/ip4/example1.nervos.org/tcp/8115/p2p/QmUsZHPbjjzU627UZFt4k8j6ycEcNvXRnVGxCPKqwbAfQS",
+  "/ip4/example2.nervos.org/tcp/8115/p2p/QmUsZHPbjjzU627UZFt4k8j6ycEcNvXRnVGxCPKqwbAfQR"
+]
+```
+
+#### Notes
+
+By default, the RPC interface is only accessible from localhost (127.0.0.1). If you need remote access, you can change `listen_address` to "0.0.0.0:8114", but be sure to implement proper security measures as this exposes your node to the network.
+
+## Making Your Node Discoverable
+
+For your node to fully participate in the network, it should be connectable by other peers:
+
+1. **Configure your firewall** to allow inbound connections on port 8115 (or your configured network port)
+2. **Set up port forwarding** if behind a router
+3. **Use a static IP or dynamic DNS** for consistent connectivity
+
+### Checking Node Connectivity
+
+The node logs will show incoming connections from peers when your node is properly connectable:
+
+```
+2026-02-10 15:23:45.123 +00:00 INFO ckb-network ConnectionService accepted a connection from 203.0.113.15:43215
+```
+
+## Check Your Understanding
+
+Scenario: You want to set up a local development environment for testing a new CKB application, but you also need to occasionally check data on the testnet.
+
+1. Which type of node would you set up for rapid development and testing?
+2. How would you initialize a testnet node in a separate directory?
+3. How would you check if your testnet node is successfully synchronizing?
+
+<details>
+<summary>Show answers</summary>
+
+1. For rapid development, use a devnet with `offckb node`.
+2. To initialize a testnet node: `./ckb init --chain testnet --data-dir ~/ckb-testnet`.
+3. To check synchronization: `./ckb-cli --url http://127.0.0.1:8114 rpc get_tip_header` and compare the block number with a known testnet explorer.
+</details>
+
+## Resources
+
+- [Official CKB Node Documentation](https://docs.nervos.org/docs/node/run-mainnet-node) - Comprehensive guide on running and maintaining CKB nodes
+- [OffCKB Documentation](https://docs.nervos.org/docs/node/run-devnet-node) - For setting up developer-friendly local nodes
+- [CKB GitHub Repository](https://github.com/nervosnetwork/ckb) - Source code and latest releases
+- [CKB.tools](https://ckb.tools/) - Provides testnet chain snapshots for faster synchronization
+- [Nervos Explorer](https://explorer.nervos.org/) - Blockchain explorer for comparing your node's progress with the network
